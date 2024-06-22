@@ -10,6 +10,7 @@ import { RepositoryEnum } from 'src/const';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanStatusDto } from './dto/update-plan-status.dto';
 import { UpdatePlanNameDto } from './dto/update-plan-name.dto';
+import { PlanStatus } from './plan.enum';
 
 @Injectable()
 export class PlansService {
@@ -23,6 +24,20 @@ export class PlansService {
 
     if (!found.length)
       throw new NotFoundException(`Plans of user with id: ${userId} not found`);
+
+    return found;
+  }
+
+  async getUserPlansWithStatus(
+    userId: string,
+    status: PlanStatus,
+  ): Promise<Plan[]> {
+    const found = await this.plansRepository.findBy({ userId, status });
+
+    if (!found.length)
+      throw new NotFoundException(
+        `Plans of user with id: ${userId} and status: ${status} not found`,
+      );
 
     return found;
   }

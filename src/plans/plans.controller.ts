@@ -10,6 +10,7 @@ import {
 import { Plan } from './plan.entity';
 import { UpdatePlanStatusDto } from './dto/update-plan-status.dto';
 import { UpdatePlanNameDto } from './dto/update-plan-name.dto';
+import { PlanStatus } from './plan.enum';
 
 @ApiTags('plans')
 @Controller('plans')
@@ -35,6 +36,32 @@ export class PlansController {
   })
   getPlansByUserId(@Param('userId') userId: string) {
     return this.plansService.getPlansByUserId(userId);
+  }
+
+  @Get('/:userId/:status')
+  @ApiOperation({
+    summary: 'Get all plans for specific user for defined status',
+  })
+  @ApiResponse({
+    status: 200,
+    type: [Plan],
+  })
+  @ApiNotFoundResponse({
+    schema: {
+      type: 'object',
+      example: {
+        message:
+          'Plans of user with id: 821f826d-4894-403d-baec-f4f362a3749 not found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
+  getUserPlansWithStatus(
+    @Param('userId') userId: string,
+    @Param('status') status: PlanStatus,
+  ) {
+    return this.plansService.getUserPlansWithStatus(userId, status);
   }
 
   @Post(':userId')
