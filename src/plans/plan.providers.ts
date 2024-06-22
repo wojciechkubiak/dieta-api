@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Plan } from './plan.entity';
-import { RepositoryEnum, SourceEnum } from 'src/const';
+import { RepositoryEnum, SourceEnum } from 'src/consts';
 
 export const planProviders = [
   {

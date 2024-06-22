@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Plan } from './plan.entity';
 import { Repository } from 'typeorm';
-import { RepositoryEnum } from 'src/const';
+import { RepositoryEnum } from 'src/consts';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanStatusDto } from './dto/update-plan-status.dto';
 import { UpdatePlanNameDto } from './dto/update-plan-name.dto';
