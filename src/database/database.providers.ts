@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { SourceEnum } from 'src/const';
+import { SourceEnum } from 'src/consts';
 
 export const databaseProviders = [
   {
