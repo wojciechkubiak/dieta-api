@@ -1,22 +1,52 @@
-export const FOUND_RECORD = { status: 200, description: 'Found record' };
-export const CREATED_RECORD = { status: 200, description: 'Created record' };
-export const UPDATED_RECORD = { status: 200, description: 'Updated record' };
-export const FORBIDDEN = { status: 403, description: 'Forbidden' };
+import { Plan } from './plan.entity';
 
-export const GET_PLANS_BY_USER_ID_SUMMMARY = {
+export const API_RESPONSE_FOUND = {
+  status: 200,
+  description: 'Found record',
+  type: Plan,
+};
+export const API_RESPONSE_SUCCESS_LIST = {
+  schema: {
+    statusCode: 200,
+    type: 'array',
+    items: {
+      type: 'object',
+      example: {
+        name: 'New plan 1',
+        userId: '821f826d-4894-403d-baec-f4f362a37493',
+        status: 'ACTIVE',
+      },
+    },
+  },
+};
+export const API_RESPONSE_CREATED = {
+  status: 200,
+  description: 'Created record',
+  type: Plan,
+};
+export const API_RESPONSE_UPDATED = {
+  status: 200,
+  description: 'Updated record',
+  type: Plan,
+};
+export const API_RESPONSE_FORBIDDEN = { status: 403, description: 'Forbidden' };
+
+export const API_OPERATION_GET_PLANS_BY_USER_ID = {
   summary: 'Get all plans for specific user',
 };
-export const GET_USER_PLANS_BY_STATUS_SUMMARY = {
+export const API_OPERATION_GET_USER_PLANS_BY_STATUS = {
   summary: 'Get all plans for specific user for defined status',
 };
-export const CREATE_EMPTY_PLAN_SUMMARY = { summary: 'Create empty plan' };
-export const GET_PLAN_BY_ID_SUMMARY = {
+export const API_OPERATION_CREATE_EMPTY_PLAN = { summary: 'Create empty plan' };
+export const API_OPERATION_GET_PLAN_BY_ID = {
   summary: 'Search for a plan of specific user',
 };
-export const UPDATE_PLAN_STATUS_SUMMARY = { summary: 'Update plan status' };
-export const UPDATE_PLAN_NAME_SUMMARY = { summary: 'Update plan name' };
+export const API_OPERATION_UPDATE_PLAN_STATUS = {
+  summary: 'Update plan status',
+};
+export const API_OPERATION_UPDATE_PLAN_NAME = { summary: 'Update plan name' };
 
-export const PLANS_NOT_FOUND = {
+export const API_RESPONSE_NOT_FOUND_PLANS = {
   schema: {
     type: 'object',
     example: {
@@ -28,7 +58,7 @@ export const PLANS_NOT_FOUND = {
   },
 };
 
-export const PLAN_NOT_FOUND = {
+export const API_RESPONSE_NOT_FOUND_PLAN = {
   schema: {
     type: 'object',
     example: {
@@ -39,18 +69,18 @@ export const PLAN_NOT_FOUND = {
     },
   },
 };
-export const PLAN_CHANGES_NOT_SAVED = {
+export const API_NOT_FOUND_PLAN_NOT_SAVED = {
   schema: {
     type: 'object',
     example: {
       message:
-        'Plan for the user: 821f826d-4894-403d-baec-f4f362a3749 not saved',
+        'Plan for the user: 821f826d-4894-403d-baec-f4f362a3749 not saved.',
       error: 'Bad Request',
       statusCode: 400,
     },
   },
 };
-export const MISSING_STATUS_FIELD = {
+export const API_NOT_FOUND_STATUS_FIELD = {
   schema: {
     type: 'object',
     example: {
@@ -60,7 +90,7 @@ export const MISSING_STATUS_FIELD = {
     },
   },
 };
-export const MISSING_NAME_FIELD = {
+export const API_NOT_FOUND_NAME_FIELD = {
   schema: {
     type: 'object',
     example: {

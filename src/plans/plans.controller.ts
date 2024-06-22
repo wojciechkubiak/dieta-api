@@ -7,26 +7,26 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Plan } from './plan.entity';
 import { UpdatePlanStatusDto } from './dto/update-plan-status.dto';
 import { UpdatePlanNameDto } from './dto/update-plan-name.dto';
 import { PlanStatus } from './plan.enum';
 import {
-  CREATED_RECORD,
-  CREATE_EMPTY_PLAN_SUMMARY,
-  FORBIDDEN,
-  FOUND_RECORD,
-  GET_PLANS_BY_USER_ID_SUMMMARY,
-  GET_PLAN_BY_ID_SUMMARY,
-  GET_USER_PLANS_BY_STATUS_SUMMARY,
-  MISSING_NAME_FIELD,
-  MISSING_STATUS_FIELD,
-  PLANS_NOT_FOUND,
-  PLAN_CHANGES_NOT_SAVED,
-  PLAN_NOT_FOUND,
-  UPDATED_RECORD,
-  UPDATE_PLAN_NAME_SUMMARY,
-  UPDATE_PLAN_STATUS_SUMMARY,
+  API_RESPONSE_CREATED,
+  API_OPERATION_CREATE_EMPTY_PLAN,
+  API_RESPONSE_FORBIDDEN,
+  API_RESPONSE_SUCCESS_LIST,
+  API_RESPONSE_FOUND,
+  API_OPERATION_GET_PLANS_BY_USER_ID,
+  API_OPERATION_GET_PLAN_BY_ID,
+  API_OPERATION_GET_USER_PLANS_BY_STATUS,
+  API_NOT_FOUND_NAME_FIELD,
+  API_NOT_FOUND_STATUS_FIELD,
+  API_RESPONSE_NOT_FOUND_PLANS,
+  API_NOT_FOUND_PLAN_NOT_SAVED,
+  API_RESPONSE_NOT_FOUND_PLAN,
+  API_RESPONSE_UPDATED,
+  API_OPERATION_UPDATE_PLAN_NAME,
+  API_OPERATION_UPDATE_PLAN_STATUS,
 } from './consts';
 
 @ApiTags('plans')
@@ -35,23 +35,17 @@ export class PlansController {
   constructor(private plansService: PlansService) {}
 
   @Get('/:userId')
-  @ApiOperation(GET_PLANS_BY_USER_ID_SUMMMARY)
-  @ApiResponse({
-    status: 200,
-    type: [Plan],
-  })
-  @ApiNotFoundResponse(PLANS_NOT_FOUND)
+  @ApiOperation(API_OPERATION_GET_PLANS_BY_USER_ID)
+  @ApiResponse(API_RESPONSE_SUCCESS_LIST)
+  @ApiNotFoundResponse(API_RESPONSE_NOT_FOUND_PLANS)
   getPlansByUserId(@Param('userId') userId: string) {
     return this.plansService.getPlansByUserId(userId);
   }
 
   @Get('/:userId/:status')
-  @ApiOperation(GET_USER_PLANS_BY_STATUS_SUMMARY)
-  @ApiResponse({
-    status: 200,
-    type: [Plan],
-  })
-  @ApiNotFoundResponse(PLANS_NOT_FOUND)
+  @ApiOperation(API_OPERATION_GET_USER_PLANS_BY_STATUS)
+  @ApiResponse(API_RESPONSE_SUCCESS_LIST)
+  @ApiNotFoundResponse(API_RESPONSE_NOT_FOUND_PLANS)
   getUserPlansByStatus(
     @Param('userId') userId: string,
     @Param('status') status: PlanStatus,
@@ -60,10 +54,10 @@ export class PlansController {
   }
 
   @Post(':userId')
-  @ApiOperation(CREATE_EMPTY_PLAN_SUMMARY)
-  @ApiResponse({ ...CREATED_RECORD, type: Plan })
-  @ApiResponse(FORBIDDEN)
-  @ApiNotFoundResponse(PLAN_CHANGES_NOT_SAVED)
+  @ApiOperation(API_OPERATION_CREATE_EMPTY_PLAN)
+  @ApiResponse(API_RESPONSE_CREATED)
+  @ApiResponse(API_RESPONSE_FORBIDDEN)
+  @ApiNotFoundResponse(API_NOT_FOUND_PLAN_NOT_SAVED)
   createPlan(
     @Param('userId') userId: string,
     @Body() createPlanDto: CreatePlanDto,
@@ -72,19 +66,19 @@ export class PlansController {
   }
 
   @Get('/:userId/:id')
-  @ApiOperation(GET_PLAN_BY_ID_SUMMARY)
-  @ApiResponse({ ...FOUND_RECORD, type: Plan })
-  @ApiNotFoundResponse(PLAN_NOT_FOUND)
+  @ApiOperation(API_OPERATION_GET_PLAN_BY_ID)
+  @ApiResponse(API_RESPONSE_FOUND)
+  @ApiNotFoundResponse(API_RESPONSE_NOT_FOUND_PLAN)
   getPlanById(@Param('userId') userId: string, @Param('id') id: string) {
     return this.plansService.getPlanById(userId, id);
   }
 
   @Put(':userId/:id/status')
-  @ApiOperation(UPDATE_PLAN_STATUS_SUMMARY)
-  @ApiResponse({ ...UPDATED_RECORD, type: Plan })
-  @ApiNotFoundResponse(MISSING_STATUS_FIELD)
-  @ApiResponse(FORBIDDEN)
-  @ApiResponse(PLAN_NOT_FOUND)
+  @ApiOperation(API_OPERATION_UPDATE_PLAN_STATUS)
+  @ApiResponse(API_RESPONSE_UPDATED)
+  @ApiNotFoundResponse(API_NOT_FOUND_STATUS_FIELD)
+  @ApiResponse(API_RESPONSE_FORBIDDEN)
+  @ApiResponse(API_RESPONSE_NOT_FOUND_PLAN)
   updatePlanStatus(
     @Param('userId') userId: string,
     @Param('id') id: string,
@@ -94,11 +88,11 @@ export class PlansController {
   }
 
   @Put(':userId/:id/name')
-  @ApiOperation(UPDATE_PLAN_NAME_SUMMARY)
-  @ApiResponse({ ...UPDATED_RECORD, type: Plan })
-  @ApiNotFoundResponse(MISSING_NAME_FIELD)
-  @ApiResponse(FORBIDDEN)
-  @ApiResponse(PLAN_NOT_FOUND)
+  @ApiOperation(API_OPERATION_UPDATE_PLAN_NAME)
+  @ApiResponse(API_RESPONSE_UPDATED)
+  @ApiNotFoundResponse(API_NOT_FOUND_NAME_FIELD)
+  @ApiResponse(API_RESPONSE_FORBIDDEN)
+  @ApiResponse(API_RESPONSE_NOT_FOUND_PLAN)
   updatePlanName(
     @Param('userId') userId: string,
     @Param('id') id: string,
