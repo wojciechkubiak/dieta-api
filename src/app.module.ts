@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { MeasuresModule } from './measures/measures.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { DaysModule } from './days/days.module';
+import { MealsModule } from './meals/meals.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { DatabaseModule } from './database/database.module';
     UsersModule,
     MeasuresModule,
     AuthModule,
+    DaysModule,
+    MealsModule,
   ],
   controllers: [],
   providers: [],
