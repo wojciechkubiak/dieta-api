@@ -28,7 +28,7 @@ export class PlansService {
     return found;
   }
 
-  async getUserPlansWithStatus(
+  async getUserPlansByStatus(
     userId: string,
     status: PlanStatus,
   ): Promise<Plan[]> {
