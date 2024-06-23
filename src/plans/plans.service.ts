@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Plan } from './plan.entity';
@@ -20,55 +21,70 @@ export class PlansService {
   ) {}
 
   async getPlansByUserId(userId: string): Promise<Plan[]> {
-    const found = await this.plansRepository.findBy({ userId });
+    try {
+      const found = await this.plansRepository.findBy({ userId });
 
-    if (!found.length)
-      throw new NotFoundException(`Plans of user with id: ${userId} not found`);
+      if (!found.length) return [];
 
-    return found;
-  }
-
-  async getUserPlansByStatus(
-    userId: string,
-    status: PlanStatus,
-  ): Promise<Plan[]> {
-    const found = await this.plansRepository.findBy({ userId, status });
-
-    if (!found.length)
-      throw new NotFoundException(
-        `Plans of user with id: ${userId} and status: ${status} not found`,
-      );
-
-    return found;
-  }
-
-  async getPlanById(userId: string, id: string): Promise<Plan> {
-    const found = await this.plansRepository.findOneBy({ userId, id });
-
-    console.log(found);
-    if (!found)
-      throw new NotFoundException(
-        `Plan: ${id} not found for the user: ${userId}`,
-      );
-
-    return found;
+      return found;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async createEmptyPlan(
     userId: string,
     { name }: CreatePlanDto,
   ): Promise<Plan> {
-    const plan = new Plan();
+    try {
+      const plan = new Plan();
 
-    plan.userId = userId;
-    plan.name = name;
+      plan.userId = userId;
+      plan.name = name;
 
-    const saved = await this.plansRepository.save(plan);
+      const saved = await this.plansRepository.save(plan);
 
-    if (!saved)
-      throw new BadRequestException(`Plan for the user: ${userId} not saved`);
+      if (!saved) {
+        throw new BadRequestException(`Plan for the user: ${userId} not saved`);
+      }
 
-    return saved;
+      return saved;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getPlanById(userId: string, id: string): Promise<Plan> {
+    try {
+      const found = await this.plansRepository.findOneBy({ userId, id });
+
+      if (!found)
+        throw new NotFoundException(
+          `Plan: ${id} not found for the user: ${userId}`,
+        );
+
+      return found;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUserPlansByStatus(
+    userId: string,
+    status: PlanStatus,
+  ): Promise<Plan[]> {
+    try {
+      const found = await this.plansRepository.findBy({ userId, status });
+
+      if (!found.length)
+        throw new NotFoundException(
+          `Plans of user with id: ${userId} and status: ${status} not found`,
+        );
+
+      return found;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async updatePlanStatus(
@@ -76,20 +92,25 @@ export class PlansService {
     id: string,
     { status }: UpdatePlanStatusDto,
   ): Promise<Plan> {
-    const found = await this.plansRepository.findOneBy({ userId, id });
+    try {
+      const found = await this.plansRepository.findOneBy({ userId, id });
 
-    if (!found)
-      throw new NotFoundException(
-        `Plan: ${id} not found for the user: ${userId}`,
-      );
+      if (!found)
+        throw new NotFoundException(
+          `Plan: ${id} not found for the user: ${userId}`,
+        );
 
-    found.status = status;
+      found.status = status;
 
-    const updated = await this.plansRepository.save(found);
+      const updated = await this.plansRepository.save(found);
 
-    if (!updated) throw new BadRequestException(`Failed to update plan: ${id}`);
+      if (!updated)
+        throw new BadRequestException(`Failed to update plan: ${id}`);
 
-    return updated;
+      return updated;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async updatePlanName(
@@ -97,19 +118,24 @@ export class PlansService {
     id: string,
     { name }: UpdatePlanNameDto,
   ): Promise<Plan> {
-    const found = await this.plansRepository.findOneBy({ userId, id });
+    try {
+      const found = await this.plansRepository.findOneBy({ userId, id });
 
-    if (!found)
-      throw new NotFoundException(
-        `Plan: ${id} not found for the user: ${userId}`,
-      );
+      if (!found)
+        throw new NotFoundException(
+          `Plan: ${id} not found for the user: ${userId}`,
+        );
 
-    found.name = name;
+      found.name = name;
 
-    const updated = await this.plansRepository.save(found);
+      const updated = await this.plansRepository.save(found);
 
-    if (!updated) throw new BadRequestException(`Failed to update plan: ${id}`);
+      if (!updated)
+        throw new BadRequestException(`Failed to update plan: ${id}`);
 
-    return updated;
+      return updated;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }
