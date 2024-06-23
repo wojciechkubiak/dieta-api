@@ -10,6 +10,7 @@ import { Plan } from './plan.entity';
 import { RepositoryEnum } from '../consts';
 import { CreatePlanDto } from './dto/create.dto';
 import { UpdateNameDto, UpdateStatusDto } from './dto/update.dto';
+import { FilterStatusDto } from './dto/filter.dto';
 
 @Injectable()
 export class PlansService {
@@ -25,6 +26,26 @@ export class PlansService {
       const found = await this.plansRepository.findBy({ userId });
 
       if (!found.length) return [];
+
+      return found;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getByStatus(query: FilterStatusDto): Promise<Plan> {
+    const userId = '1721d2a4-343d-4955-9855-2d4a22c63672';
+    console.log(query);
+    const { status } = query;
+
+    try {
+      const found = await this.plansRepository.findOneBy({
+        userId,
+        status,
+      });
+
+      if (!found)
+        throw new NotFoundException(`Plan with status: ${status} not found`);
 
       return found;
     } catch (error) {
