@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { PlanStatus } from './common.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { Status } from './plan.enum';
 
 @Entity()
 export class Plan {
@@ -22,10 +22,10 @@ export class Plan {
   })
   userId: string;
 
-  @Column('text', { default: PlanStatus.ACTIVE })
+  @Column({ default: Status.ACTIVE })
   @ApiProperty({
-    example: PlanStatus.ACTIVE,
-    description: `Plan status (default: ${PlanStatus.ACTIVE})`,
+    example: 'ACTIVE',
+    description: 'Status (default: ACTIVE)',
   })
-  status: PlanStatus;
+  status: Status;
 }
