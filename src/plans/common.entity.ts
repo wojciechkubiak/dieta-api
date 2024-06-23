@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { PlanStatus } from './plan.enum';
+import { PlanStatus } from './common.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
