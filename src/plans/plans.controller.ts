@@ -1,14 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { PlansService } from './plans.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
-import {
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdatePlanStatusDto } from './dto/update-plan-status.dto';
 import { UpdatePlanNameDto } from './dto/update-plan-name.dto';
 import { PlanStatus } from './plan.enum';
@@ -27,8 +20,6 @@ export class PlansController {
     status: 200,
     type: [Plan],
   })
-  @ApiForbiddenResponse()
-  @ApiInternalServerErrorResponse()
   getPlansByUserId(@Param('userId') userId: string) {
     return this.plansService.getPlansByUserId(userId);
   }
@@ -39,8 +30,6 @@ export class PlansController {
     status: 200,
     type: Plan,
   })
-  @ApiForbiddenResponse()
-  @ApiInternalServerErrorResponse()
   createPlan(
     @Param('userId') userId: string,
     @Body() createPlanDto: CreatePlanDto,
@@ -56,9 +45,6 @@ export class PlansController {
     status: 200,
     type: Plan,
   })
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
-  @ApiInternalServerErrorResponse()
   getPlanById(@Param('userId') userId: string, @Param('id') id: string) {
     return this.plansService.getPlanById(userId, id);
   }
@@ -71,9 +57,6 @@ export class PlansController {
     status: 200,
     type: [Plan],
   })
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
-  @ApiInternalServerErrorResponse()
   getUserPlansByStatus(
     @Param('userId') userId: string,
     @Param('status') status: PlanStatus,
@@ -87,9 +70,6 @@ export class PlansController {
     status: 200,
     type: Plan,
   })
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
-  @ApiInternalServerErrorResponse()
   updatePlanName(
     @Param('userId') userId: string,
     @Param('id') id: string,
@@ -106,9 +86,6 @@ export class PlansController {
     status: 200,
     type: Plan,
   })
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
-  @ApiInternalServerErrorResponse()
   updatePlanStatus(
     @Param('userId') userId: string,
     @Param('id') id: string,
