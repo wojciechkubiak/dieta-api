@@ -74,10 +74,10 @@ export class PlansService {
     const userId = '1721d2a4-343d-4955-9855-2d4a22c63672';
 
     try {
-      const plan = new Plan();
-
-      plan.userId = userId;
-      plan.name = name;
+      const plan = this.plansRepository.create({
+        userId,
+        name,
+      });
 
       const saved = await this.plansRepository.save(plan);
 

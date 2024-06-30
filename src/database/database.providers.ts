@@ -1,11 +1,10 @@
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { SourceEnum } from 'src/consts';
 
 export const databaseProviders = [
   {
     inject: [ConfigService],
-    provide: SourceEnum.DATA,
+    provide: 'DATA_SOURCE',
     useFactory: async (configService: ConfigService) => {
       const dataSource = new DataSource({
         type: 'postgres',
@@ -20,5 +19,6 @@ export const databaseProviders = [
 
       return dataSource.initialize();
     },
+    global: true,
   },
 ];

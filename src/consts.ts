@@ -1,9 +1,5 @@
-export enum SourceEnum {
-  DATA = 'DATA_SOURCE',
-  PLAN = 'PLAN_SOURCE',
-}
-
 export enum RepositoryEnum {
+  USER = 'USER_REPOSITORY',
   PLAN = 'PLAN_REPOSITORY',
   MEASURE = 'MEASURE_REPOSITORY',
 }
