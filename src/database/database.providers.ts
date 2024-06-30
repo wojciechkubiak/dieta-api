@@ -6,6 +6,8 @@ export const databaseProviders = [
     inject: [ConfigService],
     provide: 'DATA_SOURCE',
     useFactory: async (configService: ConfigService) => {
+      const isDev = configService.get('STAGE') === 'dev';
+
       const dataSource = new DataSource({
         type: 'postgres',
         host: configService.get('DATABASE_HOST'),
@@ -15,6 +17,10 @@ export const databaseProviders = [
         database: configService.get('DATABASE_NAME'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
+        ssl: !isDev,
+        extra: {
+          ssl: !isDev ? { rejectUnauthorized: false } : null,
+        },
       });
 
       return dataSource.initialize();
