@@ -5,8 +5,9 @@ import { DatabaseModule } from '../database/database.module';
 import { usersProviders } from './users.providers';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtAuthTokenStrategy } from './jwt-auth-token.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtRefreshAuthTokenStrategy } from './jwt-refresh-token.strategy';
 
 @Module({
   imports: [
@@ -24,8 +25,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     ConfigModule,
     DatabaseModule,
   ],
-  providers: [...usersProviders, JwtStrategy, AuthService],
+  providers: [
+    ...usersProviders,
+    JwtAuthTokenStrategy,
+    JwtRefreshAuthTokenStrategy,
+    AuthService,
+  ],
   controllers: [AuthController],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtAuthTokenStrategy, JwtRefreshAuthTokenStrategy, PassportModule],
 })
 export class AuthModule {}

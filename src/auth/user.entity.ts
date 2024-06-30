@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Plan } from '../plans/plan.entity';
 
 @Entity()
 export class User {
@@ -13,4 +14,7 @@ export class User {
 
   @Column({ default: false })
   isActivated: boolean;
+
+  @OneToMany(() => Plan, (plan) => plan.user, { eager: true })
+  plans: Plan[];
 }

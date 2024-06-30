@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Measure } from './measure.entity';
-import { RepositoryEnum } from 'src/consts';
+import { RepositoryEnum } from '../consts';
 
 export const measureProviders = [
   {
