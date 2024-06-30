@@ -9,7 +9,7 @@ import { DaysModule } from './days/days.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env.example',
+      envFilePath: '.env',
       isGlobal: true,
     }),
     AuthModule,
