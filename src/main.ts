@@ -7,7 +7,6 @@ import { Logger } from '@nestjs/common';
 
 const TITLE = 'Dieta API';
 const VERSION = 'v1';
-const PORT = 3000;
 
 async function bootstrap() {
   const logger = new Logger();
@@ -27,6 +26,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
 
+  const PORT = process.env.PORT || 3000;
   await app.listen(PORT);
 
   logger.log(`${TITLE} ${VERSION} is listening on port ${PORT}`);
