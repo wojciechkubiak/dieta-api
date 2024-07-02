@@ -1,5 +1,6 @@
 export enum RepositoryEnum {
   USER = 'USER_REPOSITORY',
   PLAN = 'PLAN_REPOSITORY',
+  DAY = 'DAY_REPOSITORY',
   MEASURE = 'MEASURE_REPOSITORY',
 }

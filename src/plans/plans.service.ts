@@ -13,12 +13,16 @@ import { UpdateNameDto, UpdateStatusDto } from './dto/update.dto';
 import { FilterStatusDto } from './dto/filter.dto';
 import { User } from '../auth/user.entity';
 import { RepositoryEnum } from '../consts';
+import { Day } from 'src/days/day.entity';
+import { DayName } from 'src/days/day.enum';
 
 @Injectable()
 export class PlansService {
   constructor(
     @Inject(RepositoryEnum.PLAN)
     private plansRepository: Repository<Plan>,
+    @Inject(RepositoryEnum.DAY)
+    private daysRepository: Repository<Day>,
   ) {}
   private logger = new Logger('PlansService');
 
@@ -88,18 +92,58 @@ export class PlansService {
         user,
       });
 
-      const saved = await this.plansRepository.save(plan);
+      const savedPlan = await this.plansRepository.save(plan);
 
-      if (!saved) {
+      const days = this.daysRepository.create([
+        {
+          day: DayName.MONDAY,
+          plan,
+          user,
+        },
+        {
+          day: DayName.TUESDAY,
+          plan,
+          user,
+        },
+        {
+          day: DayName.WEDNESDAY,
+          plan,
+          user,
+        },
+        {
+          day: DayName.THURSDAY,
+          plan,
+          user,
+        },
+        {
+          day: DayName.FRIDAY,
+          plan,
+          user,
+        },
+        {
+          day: DayName.SATURDAY,
+          plan,
+          user,
+        },
+        {
+          day: DayName.SUNDAY,
+          plan,
+          user,
+        },
+      ]);
+
+      const savedDays = await this.daysRepository.save(days);
+
+      if (!savedPlan || !savedDays) {
         this.logger.error(
-          `Failed to save the: "${name}" for user "${user.username}"`,
+          `Failed to fully save the plan: "${plan.name}" for user "${user.username}"`,
         );
         throw new BadRequestException(
           `Plan for the user: ${user.username} not saved`,
         );
       }
 
-      return saved;
+      return { ...savedPlan, days: savedDays, user: undefined };
     } catch (error) {
       this.logger.error(
         `Failed to save the: "${name}" for user "${user.username}"`,

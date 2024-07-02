@@ -6,10 +6,4 @@ export class Auth {
     description: 'Access token',
   })
   accessToken: string;
-
-  @ApiProperty({
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXXYZ...',
-    description: 'Access token',
-  })
-  refreshToken: string;
 }

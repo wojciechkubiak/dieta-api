@@ -10,7 +10,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { Auth } from './auth.model';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -22,7 +21,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: HttpStatus.CREATED })
   @HttpCode(HttpStatus.CREATED)
-  signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<Auth> {
     this.logger.verbose(
       `Creating account for: "${authCredentialsDto.username}"`,
     );
@@ -39,17 +38,5 @@ export class AuthController {
   signIn(@Body() authCredentialsDto: AuthCredentialsDto): Promise<Auth> {
     this.logger.verbose(`Logging user: "${authCredentialsDto.username}"`);
     return this.authService.signIn(authCredentialsDto);
-  }
-
-  @Post('/refresh')
-  @ApiOperation({ summary: 'Refresh tokens' })
-  @ApiResponse({
-    status: 200,
-    type: Auth,
-  })
-  @HttpCode(HttpStatus.OK)
-  refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<Auth> {
-    this.logger.verbose(`Refreshing the tokens`);
-    return this.authService.refreshTokens(refreshTokenDto);
   }
 }
