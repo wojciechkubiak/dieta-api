@@ -32,7 +32,8 @@ export class DaysService {
         },
       });
 
-      if (!found) throw new NotFoundException(`Days for: ${planId} not found`);
+      if (!found?.length)
+        throw new NotFoundException(`Days for: ${planId} not found`);
 
       return found;
     } catch (error) {

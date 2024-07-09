@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -28,6 +29,7 @@ export class User {
   plans: Plan[];
 
   @OneToOne(() => Settings, (settings) => settings.user, { eager: true })
+  @JoinColumn()
   @Exclude({ toPlainOnly: true })
   settings: Settings;
 }
