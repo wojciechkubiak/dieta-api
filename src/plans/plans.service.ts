@@ -13,16 +13,12 @@ import { UpdateNameDto, UpdateStatusDto } from './dto/update.dto';
 import { FilterStatusDto } from './dto/filter.dto';
 import { User } from '../auth/user.entity';
 import { RepositoryEnum } from '../consts';
-import { Day } from 'src/days/day.entity';
-import { DayName } from 'src/days/day.enum';
 
 @Injectable()
 export class PlansService {
   constructor(
     @Inject(RepositoryEnum.PLAN)
     private plansRepository: Repository<Plan>,
-    @Inject(RepositoryEnum.DAY)
-    private daysRepository: Repository<Day>,
   ) {}
   private logger = new Logger('PlansService');
 
@@ -94,47 +90,7 @@ export class PlansService {
 
       const savedPlan = await this.plansRepository.save(plan);
 
-      const days = this.daysRepository.create([
-        {
-          day: DayName.MONDAY,
-          plan,
-          user,
-        },
-        {
-          day: DayName.TUESDAY,
-          plan,
-          user,
-        },
-        {
-          day: DayName.WEDNESDAY,
-          plan,
-          user,
-        },
-        {
-          day: DayName.THURSDAY,
-          plan,
-          user,
-        },
-        {
-          day: DayName.FRIDAY,
-          plan,
-          user,
-        },
-        {
-          day: DayName.SATURDAY,
-          plan,
-          user,
-        },
-        {
-          day: DayName.SUNDAY,
-          plan,
-          user,
-        },
-      ]);
-
-      const savedDays = await this.daysRepository.save(days);
-
-      if (!savedPlan || !savedDays) {
+      if (!savedPlan) {
         this.logger.error(
           `Failed to fully save the plan: "${plan.name}" for user "${user.username}"`,
         );
@@ -143,7 +99,7 @@ export class PlansService {
         );
       }
 
-      return { ...savedPlan, days: savedDays, user: undefined };
+      return savedPlan;
     } catch (error) {
       this.logger.error(
         `Failed to save the: "${name}" for user "${user.username}"`,

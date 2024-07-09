@@ -1,7 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Plan } from '../plans/plan.entity';
-import { Day } from 'src/days/day.entity';
 import { Exclude } from 'class-transformer';
+import { Settings } from 'src/settings/settings.entity';
 
 @Entity()
 export class User {
@@ -21,7 +27,7 @@ export class User {
   @Exclude({ toPlainOnly: true })
   plans: Plan[];
 
-  @OneToMany(() => Day, (plan) => plan.user, { eager: true })
+  @OneToOne(() => Settings, (settings) => settings.user, { eager: true })
   @Exclude({ toPlainOnly: true })
-  days: Day[];
+  settings: Settings;
 }
