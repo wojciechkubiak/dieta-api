@@ -11,33 +11,33 @@ export class Measure {
   @Column('date')
   date: string;
 
-  @Column('real')
+  @Column('float')
   weight: number;
 
-  @Column('real')
+  @Column('float')
   neck: number;
 
-  @Column('real')
+  @Column('float')
   chest: number;
 
-  @Column('real')
+  @Column('float')
   bicep: number;
 
-  @Column('real')
+  @Column('float')
   forearm: number;
 
-  @Column('real')
+  @Column('float')
   waist: number;
 
-  @Column('real')
+  @Column('float')
   abdomen: number;
 
-  @Column('real')
+  @Column('float')
   hips: number;
 
-  @Column('real')
+  @Column('float')
   thigh: number;
 
-  @Column('real')
+  @Column('float')
   calf: number;
 }
