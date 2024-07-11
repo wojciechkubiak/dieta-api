@@ -10,6 +10,7 @@ import { Exclude } from 'class-transformer';
 import { Settings } from 'src/settings/settings.entity';
 import { Category } from 'src/categories/category.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Measure } from 'src/measures/measure.entity';
 
 @Entity()
 export class User {
@@ -49,4 +50,8 @@ export class User {
   @OneToMany(() => Category, (category) => category.user, { eager: true })
   @Exclude({ toPlainOnly: true })
   categories: Category[];
+
+  @OneToMany(() => Measure, (measure) => measure.user, { eager: true })
+  @Exclude({ toPlainOnly: true })
+  measures: Measure[];
 }

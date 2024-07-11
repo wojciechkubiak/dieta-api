@@ -17,71 +17,71 @@ export class Settings {
 
   @Column({ default: Gender.FEMALE })
   @ApiProperty({
-    example: '0',
     description: 'Gender (default: FEMALE = 0)',
+    example: 0,
   })
   gender: Gender;
 
   @Column('smallint')
   @ApiProperty({
     description: 'Age',
-    example: '35',
+    example: 35,
   })
   age: number;
 
   @Column('smallint')
   @ApiProperty({
     description: 'Height (cm)',
-    example: '175',
+    example: 175,
   })
   height: number;
 
   @Column('float')
   @ApiProperty({
     description: 'Initial Weight (kg)',
-    example: '79.9',
+    example: 79.9,
   })
   initialWeight: number;
 
   @Column('float')
   @ApiProperty({
     description: 'Target Weight (kg)',
-    example: '75.9',
+    example: 75.9,
   })
   targetWeight: number;
 
   @Column('smallint')
   @ApiProperty({
     description: 'Carbs (%)',
-    example: '34',
+    example: 34,
   })
   carbsPerc: number;
 
   @Column('smallint')
   @ApiProperty({
     description: 'Proteins (%)',
-    example: '33',
+    example: 33,
   })
   proteinsPerc: number;
 
   @Column('smallint')
   @ApiProperty({
     description: 'Fat (%)',
-    example: '33',
+    example: 33,
   })
   fatPerc: number;
 
   @Column('smallint')
   @ApiProperty({
     description: 'Height (cm)',
-    example: '175',
+    example: 175,
   })
   deficit: number;
 
   @Column({ default: ActivityLevel.MEDIOCRE })
   @ApiProperty({
-    example: '2',
     description: 'Activity Level (default: MEDIOCRE = 2)',
+    example: 2,
   })
   activity: ActivityLevel;
 

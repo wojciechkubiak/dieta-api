@@ -26,8 +26,8 @@ export class Plan {
 
   @Column({ default: Status.ACTIVE })
   @ApiProperty({
-    example: 'ACTIVE',
     description: 'Status (default: ACTIVE)',
+    example: 0,
   })
   status: Status;
 

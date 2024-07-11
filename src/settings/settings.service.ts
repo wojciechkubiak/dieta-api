@@ -91,6 +91,20 @@ export class SettingsService {
         );
       }
 
+      const macroPercentageSum =
+        createSettingsDto.carbsPerc +
+        createSettingsDto.proteinsPerc +
+        createSettingsDto.fatPerc;
+
+      if (macroPercentageSum !== 100) {
+        this.logger.error(
+          `Sum of macro for user: "${user.username}" is not equal to 100`,
+        );
+        throw new BadRequestException(
+          `Sum of macro for user: "${user.username}" is not equal to 100`,
+        );
+      }
+
       const settings = this.settingsRepository.create({
         ...createSettingsDto,
         user,
