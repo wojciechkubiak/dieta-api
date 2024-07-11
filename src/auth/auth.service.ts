@@ -48,7 +48,7 @@ export class AuthService {
         { username },
         {
           secret: this.configService.get('JWT_KEY'),
-          expiresIn: 3600,
+          expiresIn: 86400,
         },
       );
 
@@ -78,7 +78,7 @@ export class AuthService {
           { username },
           {
             secret: this.configService.get('JWT_KEY'),
-            expiresIn: 3600,
+            expiresIn: 86400,
           },
         );
 
