@@ -92,7 +92,7 @@ export class PlansService {
 
       if (!savedPlan) {
         this.logger.error(
-          `Failed to fully save the plan: "${plan.name}" for user "${user.username}"`,
+          `Failed to save the plan: "${plan.name}" for user "${user.username}"`,
         );
         throw new BadRequestException(
           `Plan for the user: ${user.username} not saved`,
