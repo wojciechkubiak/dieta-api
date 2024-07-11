@@ -5,14 +5,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DayName } from './day.enum';
-import { Plan } from 'src/plans/plan.entity';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Meal } from 'src/meals/meal.entity';
+import { Day } from 'src/days/day.entity';
+import { Ingredient } from 'src/ingredients/ingredient.entity';
 
 @Entity()
-export class Day {
+export class Meal {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     example: '42ce6d29-ddac-4ac3-9a18-d52a7913b895',
@@ -20,18 +19,18 @@ export class Day {
   })
   id: string;
 
-  @Column('smallint')
+  @Column()
   @ApiProperty({
-    example: '0',
-    description: 'Day',
+    example: 'Breakfast',
+    description: 'Meal name',
   })
-  day: DayName;
+  name: string;
 
-  @ManyToOne(() => Plan, (plan) => plan.days, { eager: false })
+  @ManyToOne(() => Day, (day) => day.meals, { eager: false })
   @Exclude({ toPlainOnly: true })
-  plan: Plan;
+  day: Day;
 
-  @OneToMany(() => Meal, (meal) => meal.day, { eager: true })
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.meal, { eager: true })
   @Exclude({ toPlainOnly: true })
-  meals: Meal[];
+  ingredients: Ingredient[];
 }

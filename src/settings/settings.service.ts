@@ -7,7 +7,6 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { RepositoryEnum } from 'src/consts';
 import { Repository } from 'typeorm';
 import { Settings } from './settings.entity';
 import { ActivityLevel, Gender } from './settings.enum';
@@ -18,7 +17,7 @@ import { UpdateSettingsDto } from './dto/dto/update.dto';
 @Injectable()
 export class SettingsService {
   constructor(
-    @Inject(RepositoryEnum.SETTINGS)
+    @Inject('SETTINGS_REPOSITORY')
     private settingsRepository: Repository<Settings>,
   ) {}
   private logger = new Logger('SettingsService');

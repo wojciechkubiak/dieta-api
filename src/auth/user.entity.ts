@@ -8,6 +8,8 @@ import {
 import { Plan } from '../plans/plan.entity';
 import { Exclude } from 'class-transformer';
 import { Settings } from 'src/settings/settings.entity';
+import { Category } from 'src/categories/category.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
@@ -15,12 +17,25 @@ export class User {
   id: string;
 
   @Column({ unique: true })
+  @ApiProperty({
+    example: 'test@gmail.com',
+    description: 'Username',
+  })
   username: string;
 
   @Column()
+  @ApiProperty({
+    example: 'Password1!',
+    description:
+      'Password with 8 letters, upper-case, lower-case, number and a sign',
+  })
   password: string;
 
   @Column({ default: false })
+  @ApiProperty({
+    example: 'true',
+    description: 'Account activation status',
+  })
   isActivated: boolean;
 
   @OneToMany(() => Plan, (plan) => plan.user, { eager: true })
@@ -30,4 +45,8 @@ export class User {
   @OneToOne(() => Settings, (settings) => settings.user, { eager: true })
   @Exclude({ toPlainOnly: true })
   settings: Settings;
+
+  @OneToMany(() => Category, (category) => category.user, { eager: true })
+  @Exclude({ toPlainOnly: true })
+  categories: Category[];
 }

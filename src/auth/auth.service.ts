@@ -12,14 +12,13 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './user.entity';
-import { RepositoryEnum } from '../consts';
 import { Auth } from './auth.model';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(RepositoryEnum.USER)
+    @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
     @Inject(ConfigService)

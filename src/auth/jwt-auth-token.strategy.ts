@@ -4,12 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { RepositoryEnum } from '../consts';
 
 @Injectable()
 export class JwtAuthTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
-    @Inject(RepositoryEnum.USER)
+    @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
     @Inject(ConfigService)
     private configService: ConfigService,

@@ -6,7 +6,6 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { RepositoryEnum } from 'src/consts';
 import { Repository } from 'typeorm';
 import { Day } from './day.entity';
 import { DayName } from './day.enum';
@@ -16,9 +15,9 @@ import { User } from 'src/auth/user.entity';
 @Injectable()
 export class DaysService {
   constructor(
-    @Inject(RepositoryEnum.PLAN)
+    @Inject('PLAN_REPOSITORY')
     private plansRepository: Repository<Plan>,
-    @Inject(RepositoryEnum.DAY)
+    @Inject('DAY_REPOSITORY')
     private daysRepository: Repository<Day>,
   ) {}
   private logger = new Logger('DaysService');
