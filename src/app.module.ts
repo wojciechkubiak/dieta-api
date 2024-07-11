@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { DaysModule } from './days/days.module';
 import { SettingsModule } from './settings/settings.module';
+import { MealsModule } from './meals/meals.module';
+import { IngredientsModule } from './ingredients/ingredients.module';
 
 @Module({
   imports: [
@@ -13,12 +15,14 @@ import { SettingsModule } from './settings/settings.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    AuthModule,
     DatabaseModule,
-    PlansModule,
-    MeasuresModule,
-    DaysModule,
+    AuthModule,
     SettingsModule,
+    MeasuresModule,
+    PlansModule,
+    DaysModule,
+    MealsModule,
+    IngredientsModule,
   ],
 })
 export class AppModule {}
