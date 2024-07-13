@@ -8,6 +8,7 @@ import { DaysModule } from './days/days.module';
 import { SettingsModule } from './settings/settings.module';
 import { MealsModule } from './meals/meals.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { IngredientsModule } from './ingredients/ingredients.module';
     DaysModule,
     MealsModule,
     IngredientsModule,
+    CategoriesModule,
   ],
 })
 export class AppModule {}

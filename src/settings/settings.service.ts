@@ -10,9 +10,9 @@ import {
 import { Repository } from 'typeorm';
 import { Settings } from './settings.entity';
 import { ActivityLevel, Gender } from './settings.enum';
-import { CreateSettingsDto } from './dto/dto/create.dto';
+import { CreateSettingsDto } from './dto/create.dto';
 import { User } from 'src/auth/user.entity';
-import { UpdateSettingsDto } from './dto/dto/update.dto';
+import { UpdateSettingsDto } from './dto/update.dto';
 
 @Injectable()
 export class SettingsService {
@@ -51,7 +51,7 @@ export class SettingsService {
       return meta;
     } catch {
       this.logger.error(`Failed to load the meta data`);
-      throw new BadRequestException(`Failed to load the meta data`);
+      throw new NotFoundException(`Failed to load the meta data`);
     }
   }
 
@@ -63,7 +63,7 @@ export class SettingsService {
 
       if (!found) {
         this.logger.error(`Settings for ${user.username} not found.`);
-        throw new ConflictException(`Settings for ${user.username} not found.`);
+        throw new NotFoundException(`Settings for ${user.username} not found.`);
       }
 
       return found;
@@ -165,7 +165,7 @@ export class SettingsService {
       this.logger.error(
         `Failed to update settings for user "${user.username}"`,
       );
-      throw new InternalServerErrorException(error);
+      throw new BadRequestException(error);
     }
   }
 }

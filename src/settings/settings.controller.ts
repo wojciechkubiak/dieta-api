@@ -13,8 +13,8 @@ import { SettingsService } from './settings.service';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
-import { UpdateSettingsDto } from './dto/dto/update.dto';
-import { CreateSettingsDto } from './dto/dto/create.dto';
+import { UpdateSettingsDto } from './dto/update.dto';
+import { CreateSettingsDto } from './dto/create.dto';
 
 @ApiTags('settings')
 @Controller('settings')

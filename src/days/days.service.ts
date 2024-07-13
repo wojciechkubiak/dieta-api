@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -55,7 +56,7 @@ export class DaysService {
           `Days for plan: ${planId} and user: "${user.username}" already exist`,
         );
 
-        throw new BadRequestException(`Days for plan: ${planId} exist`);
+        throw new ConflictException(`Days for plan: ${planId} exist`);
       }
 
       const plan = await this.plansRepository.findOneBy({
