@@ -3,7 +3,7 @@ import { Ingredient } from './ingredient.entity';
 
 export const ingredientProviders = [
   {
-    provide: 'INGREDIENT_REPOSITORY',
+    provide: 'INGREDIENTS_REPOSITORY',
     useFactory: (dataSource: DataSource) =>
       dataSource.getRepository(Ingredient),
     inject: ['DATA_SOURCE'],
