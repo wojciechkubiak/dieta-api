@@ -1,6 +1,7 @@
 import { Category } from './category.entity';
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -68,6 +69,21 @@ export class CategoriesService {
 
   async create({ category }: CategoryDto, user: User): Promise<any> {
     try {
+      const exist = await this.categoriesRepository.findOneBy({
+        category,
+        user,
+      });
+
+      if (exist) {
+        this.logger.error(
+          `Category "${category}" for user: "${user.username}" already exist`,
+        );
+
+        throw new ConflictException(
+          `Category "${category}" for user: "${user.username}" already exist`,
+        );
+      }
+
       const created = this.categoriesRepository.create({ category, user });
 
       if (!created) {
@@ -128,7 +144,7 @@ export class CategoriesService {
       return updated;
     } catch (error) {
       this.logger.error(
-        `Failed to update category: ${id} with name "${name}" for user "${user.username}"`,
+        `Failed to update category: ${id} with name "${category}" for user "${user.username}"`,
       );
       throw new InternalServerErrorException(error);
     }

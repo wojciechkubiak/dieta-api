@@ -51,6 +51,6 @@ export class DaysController {
     this.logger.verbose(
       `User "${user.username}" generates empty days for a plan: ${planId}`,
     );
-    return this.daysService.generate(planId, user);
+    return this.daysService.create(planId, user);
   }
 }

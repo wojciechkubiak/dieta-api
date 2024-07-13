@@ -42,7 +42,7 @@ export class DaysService {
     }
   }
 
-  async generate(planId: string, user: User): Promise<Day[]> {
+  async create(planId: string, user: User): Promise<Day[]> {
     try {
       const exist = await this.daysRepository.findOneBy({
         plan: {
