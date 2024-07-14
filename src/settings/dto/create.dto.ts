@@ -13,7 +13,7 @@ export class CreateSettingsDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  height: Gender;
+  height: number;
 
   @ApiProperty()
   @IsNotEmpty()

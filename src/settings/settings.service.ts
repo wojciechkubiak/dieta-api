@@ -23,32 +23,14 @@ export class SettingsService {
   private logger = new Logger('SettingsService');
 
   async getMeta(): Promise<{
-    activity: {
-      [key in string]: number;
-    };
-    gender: {
-      [key in string]: number;
-    };
+    activityLevel: string[];
+    gender: string[];
   }> {
     try {
       const activityLevel = Object.keys(ActivityLevel);
       const gender = Object.keys(Gender);
 
-      const meta = {
-        activity: {},
-        gender: {},
-      };
-
-      for (let i = 0; i < activityLevel.length / 2; i++) {
-        meta.activity[activityLevel[i]] =
-          activityLevel[i + activityLevel.length / 2];
-      }
-
-      for (let i = 0; i < gender.length / 2; i++) {
-        meta.gender[gender[i]] = gender[i + gender.length / 2];
-      }
-
-      return meta;
+      return { activityLevel, gender };
     } catch {
       this.logger.error(`Failed to load the meta data`);
       throw new NotFoundException(`Failed to load the meta data`);
@@ -92,10 +74,11 @@ export class SettingsService {
       }
 
       const macroPercentageSum =
-        createSettingsDto.carbsPerc +
-        createSettingsDto.proteinsPerc +
-        createSettingsDto.fatPerc;
+        +createSettingsDto.carbsPerc +
+        +createSettingsDto.proteinsPerc +
+        +createSettingsDto.fatPerc;
 
+      console.log(macroPercentageSum);
       if (macroPercentageSum !== 100) {
         this.logger.error(
           `Sum of macro for user: "${user.username}" is not equal to 100`,

@@ -1,12 +1,12 @@
 export enum ActivityLevel {
-  NONE,
-  VERY_LOW,
-  MEDIOCRE,
-  ADVANCED,
-  VERY_HIGH,
+  NONE = 'NONE',
+  VERY_LOW = 'VERY_LOW',
+  MEDIOCRE = 'MEDIOCRE',
+  ADVANCED = 'ADVANCED',
+  VERY_HIGH = 'VERY_HIGH',
 }
 
 export enum Gender {
-  FEMALE,
-  MALE,
+  FEMALE = 'FEMALE',
+  MALE = 'MALE',
 }

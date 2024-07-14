@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { CreateIngredientsDto } from './dto/create.dto';
 import { Meal } from 'src/meals/meal.entity';
 import { EditIngredientDto } from './dto/edit.dto';
+import { Unit } from './ingredients.enum';
 
 @Injectable()
 export class IngredientsService {
@@ -22,6 +23,15 @@ export class IngredientsService {
     private mealsRepository: Repository<Meal>,
   ) {}
   private logger = new Logger('IngredientsService');
+
+  async getMeta(): Promise<string[]> {
+    try {
+      return Object.keys(Unit);
+    } catch {
+      this.logger.error(`Failed to load the meta data`);
+      throw new NotFoundException(`Failed to load the meta data`);
+    }
+  }
 
   async getById(id: string, user: User): Promise<Ingredient> {
     try {
@@ -93,7 +103,7 @@ export class IngredientsService {
     createIngredientsDto: CreateIngredientsDto[],
     mealId: string,
     user: User,
-  ): Promise<any> {
+  ): Promise<Ingredient> {
     try {
       const foundMeal = await this.mealsRepository.findOneBy({ id: mealId });
 
@@ -146,7 +156,7 @@ export class IngredientsService {
     editDealDto: EditIngredientDto,
     id: string,
     user: User,
-  ): Promise<any> {
+  ): Promise<Ingredient> {
     try {
       let found = await this.ingredientsRepository.findOneBy({
         id,
@@ -191,7 +201,7 @@ export class IngredientsService {
     }
   }
 
-  async remove(id: string, user: User): Promise<any> {
+  async remove(id: string, user: User): Promise<boolean> {
     try {
       const found = await this.ingredientsRepository.findOneBy({
         id,
@@ -221,6 +231,8 @@ export class IngredientsService {
         );
         throw new BadRequestException(`Could not delete ingredient "${id}"`);
       }
+
+      return true;
     } catch (error) {
       this.logger.error(
         `Failed to get ingredient: ${id} for user "${user.username}"`,

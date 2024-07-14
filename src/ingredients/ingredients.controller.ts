@@ -24,6 +24,12 @@ import { EditIngredientDto } from './dto/edit.dto';
 export class IngredientsController {
   constructor(private ingredientsServices: IngredientsService) {}
 
+  @Get('meta')
+  @HttpCode(HttpStatus.OK)
+  async getMeta() {
+    return this.ingredientsServices.getMeta();
+  }
+
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async get(@GetUser() user: User, @Param('id') id: string) {

@@ -1,5 +1,5 @@
 export enum Unit {
-  PIECES = 'pc',
+  PIECES = 'pieces',
   GRAMS = 'g',
   ML = 'ml',
 }

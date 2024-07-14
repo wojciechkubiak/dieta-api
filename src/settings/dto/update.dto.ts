@@ -9,7 +9,7 @@ export class UpdateSettingsDto {
   age: number;
 
   @ApiProperty()
-  height: Gender;
+  height: number;
 
   @ApiProperty()
   initialWeight: number;
