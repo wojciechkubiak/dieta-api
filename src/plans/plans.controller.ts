@@ -36,6 +36,7 @@ export class PlansController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: [Plan],
+    description: 'Success.',
   })
   @HttpCode(HttpStatus.OK)
   getAll(@GetUser() user: User) {
@@ -50,6 +51,7 @@ export class PlansController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Plan,
+    description: 'Success.',
   })
   @HttpCode(HttpStatus.OK)
   getByStatus(@Query() query: FilterStatusDto, @GetUser() user: User) {
@@ -66,6 +68,7 @@ export class PlansController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Plan,
+    description: 'Success.',
   })
   @HttpCode(HttpStatus.OK)
   getById(@Param('planId') planId: string, @GetUser() user: User) {
@@ -80,6 +83,7 @@ export class PlansController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: Plan,
+    description: 'Created.',
   })
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createPlanDto: CreatePlanDto, @GetUser() user: User) {
@@ -94,6 +98,7 @@ export class PlansController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Plan,
+    description: 'Success.',
   })
   @HttpCode(HttpStatus.OK)
   updateName(
@@ -109,6 +114,7 @@ export class PlansController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Plan,
+    description: 'Success.',
   })
   @HttpCode(HttpStatus.OK)
   updateStatus(

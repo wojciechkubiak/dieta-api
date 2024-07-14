@@ -12,7 +12,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { CategoryDto } from './dto/common.dto';
@@ -30,6 +37,7 @@ export class CategoriesController {
     status: HttpStatus.OK,
     type: [Category],
   })
+  @ApiNotFoundResponse({ description: 'Category not found.' })
   @HttpCode(HttpStatus.OK)
   async getAll(@GetUser() user: User) {
     return this.categoriesServices.getAll(user);
@@ -41,6 +49,7 @@ export class CategoriesController {
     status: HttpStatus.OK,
     type: Category,
   })
+  @ApiNotFoundResponse({ description: 'Categories not found.' })
   @HttpCode(HttpStatus.OK)
   async get(@GetUser() user: User, @Param('id') id: string) {
     return this.categoriesServices.getById(id, user);
@@ -52,6 +61,8 @@ export class CategoriesController {
     status: HttpStatus.CREATED,
     type: Category,
   })
+  @ApiConflictResponse({ description: 'Category already exists.' })
+  @ApiBadRequestResponse({ description: 'Failed to create or save.' })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createCategoryDto: CategoryDto, @GetUser() user: User) {
     return this.categoriesServices.create(createCategoryDto, user);
@@ -63,6 +74,8 @@ export class CategoriesController {
     status: HttpStatus.OK,
     type: Category,
   })
+  @ApiNotFoundResponse({ description: 'Category not found.' })
+  @ApiBadRequestResponse({ description: 'Failed to update.' })
   @HttpCode(HttpStatus.OK)
   async edit(
     @Body() updateCategoryDto: CategoryDto,
@@ -77,6 +90,8 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
   })
+  @ApiNotFoundResponse({ description: 'Category not found.' })
+  @ApiBadRequestResponse({ description: 'Failed to delete.' })
   @HttpCode(HttpStatus.OK)
   async delete(@GetUser() user: User, @Param('id') id: string) {
     return this.categoriesServices.delete(id, user);

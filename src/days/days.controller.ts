@@ -12,7 +12,14 @@ import { DaysService } from './days.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Day } from './day.entity';
 
 @ApiTags('days')
@@ -29,6 +36,10 @@ export class DaysController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: [Day],
+    description: 'Success.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Days for plan not found.',
   })
   @HttpCode(HttpStatus.OK)
   getById(@Param('planId') planId: string, @GetUser() user: User) {
@@ -45,6 +56,13 @@ export class DaysController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: [Day],
+    description: 'Created.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Plan not found or failed to save the days.',
+  })
+  @ApiConflictResponse({
+    description: 'Days already exist.',
   })
   @HttpCode(HttpStatus.CREATED)
   generate(@Param('planId') planId: string, @GetUser() user: User) {

@@ -12,7 +12,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { MeasuresService } from './measures.service';
 import { CreateMeasureDto } from './dto/create.dto';
@@ -30,7 +37,9 @@ export class MeasuresController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: [Measure],
+    description: 'Success.',
   })
+  @ApiNotFoundResponse({ description: 'Measures not found.' })
   @HttpCode(HttpStatus.OK)
   async getAll(@GetUser() user: User) {
     return this.measuresService.getAll(user);
@@ -41,6 +50,10 @@ export class MeasuresController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: Measure,
+    description: 'Created.',
+  })
+  @ApiConflictResponse({
+    description: 'Measure with given date already exists.',
   })
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -55,7 +68,9 @@ export class MeasuresController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Measure,
+    description: 'Success.',
   })
+  @ApiNotFoundResponse({ description: 'Measure not found.' })
   @HttpCode(HttpStatus.OK)
   async get(@GetUser() user: User, @Param('id') id: string) {
     return this.measuresService.getById(id, user);
@@ -66,7 +81,10 @@ export class MeasuresController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Measure,
+    description: 'Success.',
   })
+  @ApiNotFoundResponse({ description: 'Measure not found.' })
+  @ApiBadRequestResponse({ description: 'Failed to save.' })
   @HttpCode(HttpStatus.OK)
   async edit(
     @Body() editMeasureDto: EditMeasureDto,
@@ -78,12 +96,17 @@ export class MeasuresController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete specific user measure.' })
+  @ApiOperation({
+    summary: 'Delete specific user measure.',
+  })
+  @ApiNotFoundResponse({ description: 'Measure not found.' })
+  @ApiBadRequestResponse({ description: 'Failed to delete.' })
   @ApiResponse({
     status: HttpStatus.OK,
+    description: 'Success.',
   })
   @HttpCode(HttpStatus.OK)
   async delete(@GetUser() user: User, @Param('id') id: string) {
-    return this.measuresService.remove(id, user);
+    return this.measuresService.delete(id, user);
   }
 }

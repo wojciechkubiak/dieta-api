@@ -85,7 +85,6 @@ export class SettingsService {
         +createSettingsDto.proteinsPerc +
         +createSettingsDto.fatPerc;
 
-      console.log(macroPercentageSum);
       if (macroPercentageSum !== 100) {
         this.logger.error(MACRO_ERROR_MESSAGE);
         throw new BadRequestException(MACRO_ERROR_MESSAGE);

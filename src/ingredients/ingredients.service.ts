@@ -175,7 +175,7 @@ export class IngredientsService {
     }
   }
 
-  async remove(id: string, user: User): Promise<void> {
+  async delete(id: string, user: User): Promise<void> {
     const NOT_FOUND_ERROR_MESSAGE = `Ingredient "${id}" for user "${user.username}" not found.`;
     const FAILED_TO_DELETE_ERROR_MESSAGE = `Failed to delete ingredient "${id}" for user "${user.username}".`;
 

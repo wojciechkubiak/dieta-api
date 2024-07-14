@@ -11,7 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MealsService } from './meals.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
@@ -30,6 +36,9 @@ export class MealsController {
     status: HttpStatus.OK,
     type: [Meal],
   })
+  @ApiNotFoundResponse({
+    description: 'Meals for specific day not found.',
+  })
   @HttpCode(HttpStatus.OK)
   async getAll(@Param('dayId') dayId: string, @GetUser() user: User) {
     return this.mealsService.getAll(dayId, user);
@@ -40,6 +49,12 @@ export class MealsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: Meal,
+  })
+  @ApiNotFoundResponse({
+    description: 'Day not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Failed to create or save the deal.',
   })
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -56,6 +71,9 @@ export class MealsController {
     status: HttpStatus.OK,
     type: Meal,
   })
+  @ApiNotFoundResponse({
+    description: 'Get meal by id.',
+  })
   @HttpCode(HttpStatus.OK)
   async getById(@GetUser() user: User, @Param('id') id: string) {
     return this.mealsService.getById(id, user);
@@ -66,6 +84,9 @@ export class MealsController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Meal,
+  })
+  @ApiNotFoundResponse({
+    description: 'Meal not found.',
   })
   @HttpCode(HttpStatus.OK)
   async edit(
@@ -81,8 +102,14 @@ export class MealsController {
   @ApiResponse({
     status: HttpStatus.OK,
   })
+  @ApiNotFoundResponse({
+    description: 'Meal not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Failed to delete ingredients/meal.',
+  })
   @HttpCode(HttpStatus.OK)
   async delete(@GetUser() user: User, @Param('id') id: string) {
-    return this.mealsService.remove(id, user);
+    return this.mealsService.delete(id, user);
   }
 }

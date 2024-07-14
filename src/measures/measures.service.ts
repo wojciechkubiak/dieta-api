@@ -143,7 +143,7 @@ export class MeasuresService {
     }
   }
 
-  async remove(id: string, user: User): Promise<void> {
+  async delete(id: string, user: User): Promise<void> {
     const MEASURE_NOT_FOUND_ERROR_MESSAGE = `Measure "${id}" for user "${user.username}" not found.`;
     const FAILED_TO_DELETE_MEASURE_ERROR_MESSAGE = `Failed to delete measure "${id}" for user "${user.username}".`;
 

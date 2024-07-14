@@ -12,7 +12,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientsDto } from './dto/create.dto';
@@ -29,6 +35,10 @@ export class IngredientsController {
   @ApiOperation({ summary: 'Get list of unit options.' })
   @ApiResponse({
     status: HttpStatus.OK,
+    description: 'Success.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Failed to load/parse the meta data.',
   })
   @HttpCode(HttpStatus.OK)
   async getMeta() {
@@ -40,9 +50,13 @@ export class IngredientsController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Ingredient,
+    description: 'Success.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Ingredient not found.',
   })
   @HttpCode(HttpStatus.OK)
-  async get(@GetUser() user: User, @Param('id') id: string) {
+  async getById(@GetUser() user: User, @Param('id') id: string) {
     return this.ingredientsServices.getById(id, user);
   }
 
@@ -51,6 +65,10 @@ export class IngredientsController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: Ingredient,
+    description: 'Success.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Ingredient not found.',
   })
   @HttpCode(HttpStatus.OK)
   async edit(
@@ -65,10 +83,14 @@ export class IngredientsController {
   @ApiOperation({ summary: 'Delete specific ingredient' })
   @ApiResponse({
     status: HttpStatus.OK,
+    description: 'Success.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Ingredient not found.',
   })
   @HttpCode(HttpStatus.OK)
   async delete(@GetUser() user: User, @Param('id') id: string) {
-    return this.ingredientsServices.remove(id, user);
+    return this.ingredientsServices.delete(id, user);
   }
 
   @Get('/meal/:mealId')
@@ -76,6 +98,10 @@ export class IngredientsController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: [Ingredient],
+    description: 'Success.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Ingredients for meal not found.',
   })
   @HttpCode(HttpStatus.OK)
   async getAll(@Param('mealId') mealId: string, @GetUser() user: User) {
@@ -85,10 +111,17 @@ export class IngredientsController {
   @Post('/meal/:mealId')
   @ApiOperation({ summary: 'Create new ingredient for a specific meal.' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: Ingredient,
+    description: 'Created.',
   })
-  @HttpCode(HttpStatus.OK)
+  @ApiNotFoundResponse({
+    description: 'Meal not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Failed to add the ingredients.',
+  })
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Param('mealId') mealId: string,
     @Body() createIngredientsDto: CreateIngredientsDto,
