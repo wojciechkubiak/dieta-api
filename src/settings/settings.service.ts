@@ -26,26 +26,32 @@ export class SettingsService {
     activityLevel: string[];
     gender: string[];
   }> {
+    const FAILED_TO_LOAD_META_DATA_ERROR_MESSAGE = `Failed to load the meta data.`;
+
     try {
       const activityLevel = Object.keys(ActivityLevel);
       const gender = Object.keys(Gender);
 
       return { activityLevel, gender };
-    } catch (error) {
-      this.logger.error(error.response.message);
-      throw new InternalServerErrorException(error.response.message);
+    } catch {
+      this.logger.error(FAILED_TO_LOAD_META_DATA_ERROR_MESSAGE);
+      throw new InternalServerErrorException(
+        FAILED_TO_LOAD_META_DATA_ERROR_MESSAGE,
+      );
     }
   }
 
   async get(user: User): Promise<Settings> {
+    const NOT_FOUND_ERROR_MESSAGE = `Settings for ${user.username} not found.`;
+
     try {
       const found = await this.settingsRepository.findOneBy({
         user,
       });
 
       if (!found) {
-        this.logger.error(`Settings for ${user.username} not found.`);
-        throw new NotFoundException(`Settings for ${user.username} not found.`);
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
@@ -59,18 +65,18 @@ export class SettingsService {
     createSettingsDto: CreateSettingsDto,
     user: User,
   ): Promise<Settings> {
+    const ALREADY_EXISTS_ERROR_MESSAGE = `Settings for "${user.username}" already exist. Edit them instead.`;
+    const MACRO_ERROR_MESSAGE = `Sum of macro for user "${user.username}" is not equal to 100.`;
+    const FAILED_TO_SAVE_ERROR_MESSAGE = `Failed to save the settings for user "${user.username}".`;
+
     try {
       const found = await this.settingsRepository.findOneBy({
         user,
       });
 
       if (found) {
-        this.logger.error(
-          `Settings for ${user.username} already exist. Edit them instead`,
-        );
-        throw new ConflictException(
-          `Settings for ${user.username} already exist. Edit them instead`,
-        );
+        this.logger.error(ALREADY_EXISTS_ERROR_MESSAGE);
+        throw new ConflictException(ALREADY_EXISTS_ERROR_MESSAGE);
       }
 
       const macroPercentageSum =
@@ -80,12 +86,8 @@ export class SettingsService {
 
       console.log(macroPercentageSum);
       if (macroPercentageSum !== 100) {
-        this.logger.error(
-          `Sum of macro for user: "${user.username}" is not equal to 100`,
-        );
-        throw new BadRequestException(
-          `Sum of macro for user: "${user.username}" is not equal to 100`,
-        );
+        this.logger.error(MACRO_ERROR_MESSAGE);
+        throw new BadRequestException(MACRO_ERROR_MESSAGE);
       }
 
       const settings = this.settingsRepository.create({
@@ -96,12 +98,8 @@ export class SettingsService {
       const saved = await this.settingsRepository.save(settings);
 
       if (!saved) {
-        this.logger.error(
-          `Failed to save the settings for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to save the settings for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_SAVE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_SAVE_ERROR_MESSAGE);
       }
 
       return saved;
@@ -115,16 +113,15 @@ export class SettingsService {
     updateSettingsDto: UpdateSettingsDto,
     user: User,
   ): Promise<Settings> {
+    const NOT_FOUND_ERROR_MESSAGE = `Settings of the user "${user.username}" not found.`;
+    const FAILED_TO_UPDATE_ERROR_MESSAGE = `Failed to update settings for user "${user.username}".`;
+
     try {
       const found = await this.settingsRepository.findOneBy({ user });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get settings of the user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Failed to get settings of the user "${user.username}"`,
-        );
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       const updated = await this.settingsRepository.save({
@@ -133,12 +130,8 @@ export class SettingsService {
       });
 
       if (!updated) {
-        this.logger.error(
-          `Failed to update settings for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to update settings for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_UPDATE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_UPDATE_ERROR_MESSAGE);
       }
 
       return updated;
