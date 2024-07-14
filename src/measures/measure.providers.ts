@@ -3,7 +3,7 @@ import { Measure } from './measure.entity';
 
 export const measureProviders = [
   {
-    provide: 'MEASURE_REPOSITORY',
+    provide: 'MEASURES_REPOSITORY',
     useFactory: (dataSource: DataSource) => dataSource.getRepository(Measure),
     inject: ['DATA_SOURCE'],
   },
