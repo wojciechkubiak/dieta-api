@@ -100,7 +100,7 @@ export class IngredientsService {
   }
 
   async create(
-    createIngredientsDto: CreateIngredientsDto[],
+    createIngredientsDto: CreateIngredientsDto,
     mealId: string,
     user: User,
   ): Promise<Ingredient> {
@@ -201,7 +201,7 @@ export class IngredientsService {
     }
   }
 
-  async remove(id: string, user: User): Promise<boolean> {
+  async remove(id: string, user: User): Promise<void> {
     try {
       const found = await this.ingredientsRepository.findOneBy({
         id,
@@ -231,8 +231,6 @@ export class IngredientsService {
         );
         throw new BadRequestException(`Could not delete ingredient "${id}"`);
       }
-
-      return true;
     } catch (error) {
       this.logger.error(
         `Failed to get ingredient: ${id} for user "${user.username}"`,

@@ -62,7 +62,7 @@ export class IngredientsController {
   @HttpCode(HttpStatus.OK)
   async create(
     @Param('mealId') mealId: string,
-    @Body() createIngredientsDto: CreateIngredientsDto[],
+    @Body() createIngredientsDto: CreateIngredientsDto,
     @GetUser() user: User,
   ) {
     return this.ingredientsServices.create(createIngredientsDto, mealId, user);
