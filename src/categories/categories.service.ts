@@ -37,13 +37,9 @@ export class CategoriesService {
       }
 
       return found;
-    } catch {
-      this.logger.error(
-        `Category for ${user.username} with ID ${id} not found.`,
-      );
-      throw new NotFoundException(
-        `Category for ${user.username} with ID ${id} not found.`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -61,9 +57,9 @@ export class CategoriesService {
       }
 
       return found;
-    } catch {
-      this.logger.error(`Categories for ${user.username} not found.`);
-      throw new NotFoundException(`Categories for ${user.username} not found.`);
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -107,13 +103,9 @@ export class CategoriesService {
       }
 
       return saved;
-    } catch {
-      this.logger.error(
-        `Failed to save the category "${category}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(
-        `Failed to save the category "${category}" for user "${user.username}"`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -143,10 +135,8 @@ export class CategoriesService {
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to update category: ${id} with name "${category}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -172,10 +162,8 @@ export class CategoriesService {
         throw new BadRequestException(`Could not delete category "${id}"`);
       }
     } catch (error) {
-      this.logger.error(
-        `Failed to delete category: ${id} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }

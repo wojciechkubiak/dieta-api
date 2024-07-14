@@ -27,7 +27,16 @@ export class AuthService {
   private logger = new Logger('AuthService');
 
   async signUp({ username, password }: AuthCredentialsDto): Promise<Auth> {
+    const FAILED_TO_CREATE_ERROR_MESSAGE = `Username "${username}" already exists`;
+
     try {
+      const exists = await this.usersRepository.findOneBy({ username });
+
+      if (exists) {
+        this.logger.error(FAILED_TO_CREATE_ERROR_MESSAGE);
+        throw new ConflictException(FAILED_TO_CREATE_ERROR_MESSAGE);
+      }
+
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -39,8 +48,8 @@ export class AuthService {
       const saved = await this.usersRepository.save(user);
 
       if (!saved) {
-        this.logger.error(`Failed to create the user: "${username}"`);
-        throw new BadRequestException(`User not created`);
+        this.logger.error(FAILED_TO_CREATE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_CREATE_ERROR_MESSAGE);
       }
 
       const accessToken = await this.jwtService.signAsync(
@@ -53,41 +62,41 @@ export class AuthService {
 
       return { accessToken };
     } catch (error) {
-      if (error.code === '23505') {
-        this.logger.error(
-          `Failed to create the user because of existing name: "${username}"`,
-        );
-        throw new ConflictException('Username already exists');
-      }
-
-      this.logger.error(`Failed to create the user: "${username}"`);
-
-      throw new InternalServerErrorException();
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async signIn({ username, password }: AuthCredentialsDto): Promise<Auth> {
-    const user = await this.usersRepository.findOneBy({ username });
+    const WRONG_AUTH_ERROR_MESSAGE = `Provided wrong authentication data for the user: "${username}"`;
 
-    if (user) {
-      const isGoodPassword = await bcrypt.compare(password, user.password);
+    try {
+      const user = await this.usersRepository.findOneBy({ username });
 
-      if (isGoodPassword) {
-        const accessToken = await this.jwtService.signAsync(
-          { username },
-          {
-            secret: this.configService.get('JWT_KEY'),
-            expiresIn: 86400,
-          },
-        );
+      if (user) {
+        const isGoodPassword = await bcrypt.compare(password, user.password);
 
-        return { accessToken };
+        if (isGoodPassword) {
+          const accessToken = await this.jwtService.signAsync(
+            { username },
+            {
+              secret: this.configService.get('JWT_KEY'),
+              expiresIn: 86400,
+            },
+          );
+
+          return { accessToken };
+        } else {
+          this.logger.error(WRONG_AUTH_ERROR_MESSAGE);
+          throw new UnauthorizedException(WRONG_AUTH_ERROR_MESSAGE);
+        }
       } else {
-        this.logger.error(
-          `Provided wrong authentication data for the user: "${username}"`,
-        );
-        throw new UnauthorizedException('Please check your logic credentials');
+        this.logger.error(WRONG_AUTH_ERROR_MESSAGE);
+        throw new UnauthorizedException(WRONG_AUTH_ERROR_MESSAGE);
       }
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }
