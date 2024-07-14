@@ -24,7 +24,7 @@ export class DaysService {
   private logger = new Logger('DaysService');
 
   async getByPlanId(planId: string, user: User): Promise<Day[]> {
-    const DAYS_NOT_FOUND_ERROR_MESSAGE = `Days for: ${planId} not found`;
+    const DAYS_NOT_FOUND_ERROR_MESSAGE = `Days for "${planId}" not found.`;
 
     try {
       const found = await this.daysRepository.findBy({
@@ -47,9 +47,9 @@ export class DaysService {
   }
 
   async create(planId: string, user: User): Promise<Day[]> {
-    const ALREADY_EXISTS_ERROR_MESSAGE = `Days for plan "${planId}" and user "${user.username}" already exist`;
-    const PLAN_NOT_FOUND_ERROR_MESSAGE = `Plan "${planId}" for user "${user.username}" not found`;
-    const FAILED_DAYS_CREATION_ERROR_MESSAGE = `Failed to save days for plan "${planId}" and for user "${user.username}"`;
+    const ALREADY_EXISTS_ERROR_MESSAGE = `Days for plan "${planId}" and user "${user.username}" already exists.`;
+    const PLAN_NOT_FOUND_ERROR_MESSAGE = `Plan "${planId}" for user "${user.username}" not found.`;
+    const FAILED_DAYS_CREATION_ERROR_MESSAGE = `Failed to save days for plan "${planId}" and for user "${user.username}".`;
 
     try {
       const exist = await this.daysRepository.findOneBy({

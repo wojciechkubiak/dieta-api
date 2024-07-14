@@ -29,8 +29,8 @@ export class PlansService {
 
       return found;
     } catch (error) {
-      this.logger.error(`Failed to get all plans for user "${user.username}"`);
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -48,10 +48,8 @@ export class PlansService {
 
       return found;
     } catch (error) {
-      this.logger.error(
-        `Failed to get all plans with status: ${query.status} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -71,11 +69,8 @@ export class PlansService {
       }
       return found;
     } catch (error) {
-      this.logger.error(
-        `Failed to get plan: ${planId} for user "${user.username}"`,
-      );
-
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -99,10 +94,8 @@ export class PlansService {
 
       return savedPlan;
     } catch (error) {
-      this.logger.error(
-        `Failed to save the: "${name}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -136,10 +129,8 @@ export class PlansService {
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to update plan: ${id} with name equal to "${name}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -166,10 +157,8 @@ export class PlansService {
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to update plan: ${id} with status equal to "${status}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }

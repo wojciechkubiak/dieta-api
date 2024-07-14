@@ -26,6 +26,8 @@ export class MealsService {
   private logger = new Logger('MealsService');
 
   async getById(id: string, user: User): Promise<Meal> {
+    const MEAL_NOT_FOUND_ERROR_MESSAGE = `Meal with ID ${id} for ${user.username} not found.`;
+
     try {
       const found = await this.mealsRepository.findOneBy({
         id,
@@ -37,22 +39,20 @@ export class MealsService {
       });
 
       if (!found) {
-        this.logger.error(`Meal with ID ${id} for ${user.username} not found.`);
-        throw new NotFoundException(
-          `Meal with ID ${id} for ${user.username} not found.`,
-        );
+        this.logger.error(MEAL_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(MEAL_NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
-    } catch {
-      this.logger.error(`Meal with ID ${id} for ${user.username} not found.`);
-      throw new NotFoundException(
-        `Meal with ID ${id} for ${user.username} not found.`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async getAll(dayId: string, user: User): Promise<Meal[]> {
+    const MEALS_NOT_FOUND_ERROR_MESSAGE = `Meals for day "${dayId}" of the user "${user.username}" not found.`;
+
     try {
       const found = await this.mealsRepository.findBy({
         day: {
@@ -66,22 +66,14 @@ export class MealsService {
       // TODO: Fix the order
 
       if (!found.length) {
-        this.logger.error(
-          `Meals for day ${dayId} of the user ${user.username} not found.`,
-        );
-        throw new NotFoundException(
-          `Meals for day ${dayId} of the user ${user.username} not found.`,
-        );
+        this.logger.error(MEALS_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(MEALS_NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
-    } catch {
-      this.logger.error(
-        `Meals for day ${dayId} of the user ${user.username} not found.`,
-      );
-      throw new NotFoundException(
-        `Meals for day ${dayId} of the user ${user.username} not found.`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -90,6 +82,9 @@ export class MealsService {
     dayId: string,
     user: User,
   ): Promise<Meal> {
+    const DAY_NOT_FOUND_ERROR_MESSAGE = `Day for "${user.username}" with ID "${dayId}" not found.`;
+    const FAILED_TO_ADD_MEAL_ERROR_MESSAGE = `Failed to add meal to the day "${dayId}" for user "${user.username}".`;
+
     try {
       const foundDay = await this.daysRepository.findOneBy({
         id: dayId,
@@ -99,12 +94,8 @@ export class MealsService {
       });
 
       if (!foundDay) {
-        this.logger.error(
-          `Day for ${user.username} with ID ${dayId} not found.`,
-        );
-        throw new NotFoundException(
-          `Day for ${user.username} with ID ${dayId} not found.`,
-        );
+        this.logger.error(DAY_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(DAY_NOT_FOUND_ERROR_MESSAGE);
       }
 
       const created = this.mealsRepository.create({
@@ -113,37 +104,28 @@ export class MealsService {
       });
 
       if (!created) {
-        this.logger.error(
-          `Failed to add meal to the day "${dayId}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to add meal to the day "${dayId}" for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_ADD_MEAL_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_ADD_MEAL_ERROR_MESSAGE);
       }
 
       const saved = await this.mealsRepository.save(created);
 
       if (!saved) {
-        this.logger.error(
-          `Failed to add meal to the day "${dayId}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to add meal to the day "${dayId}" for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_ADD_MEAL_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_ADD_MEAL_ERROR_MESSAGE);
       }
 
       return saved;
-    } catch {
-      this.logger.error(
-        `Failed to add meal to the day "${dayId}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(
-        `Failed to add meal to the day "${dayId}" for user "${user.username}"`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async edit(editMealDto: MealsDto, mealId: string, user: User): Promise<Meal> {
+    const MEAL_NOT_FOUND_ERROR_MESSAGE = `Meal "${mealId}" for user "${user.username}" not found.`;
+    const MEAL_NOT_UPDATED_ERROR_MESSAGE = `Failed to update meal "${mealId}".`;
+
     try {
       let found = await this.mealsRepository.findOneBy({
         id: mealId,
@@ -155,12 +137,8 @@ export class MealsService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get meal: ${mealId} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Failed to get meal: ${mealId} for user "${user.username}"`,
-        );
+        this.logger.error(MEAL_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(MEAL_NOT_FOUND_ERROR_MESSAGE);
       }
 
       found = {
@@ -171,22 +149,22 @@ export class MealsService {
       const updated = await this.mealsRepository.save(found);
 
       if (!updated) {
-        this.logger.error(
-          `Failed to get meal: ${mealId} for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Failed to update meal: ${mealId}`);
+        this.logger.error(MEAL_NOT_UPDATED_ERROR_MESSAGE);
+        throw new BadRequestException(MEAL_NOT_UPDATED_ERROR_MESSAGE);
       }
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to get meal: ${mealId} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async remove(id: string, user: User): Promise<void> {
+    const MEAL_NOT_FOUND_ERROR_MESSAGE = `Meal "${id}" for user "${user.username}" not found.`;
+    const INGREDIENTS_NOT_DELETED_ERROR_MESSAGE = `Failed to delete ingredients of meal: ${id} for user "${user.username}"`;
+    const MEAL_NOT_DELETED_ERROR_MESSAGE = `Failed to delete meal: ${id} for user "${user.username}"`;
+
     try {
       const meal = await this.mealsRepository.findOneBy({
         id,
@@ -198,12 +176,8 @@ export class MealsService {
       });
 
       if (!meal) {
-        this.logger.error(
-          `Failed to get meal: ${id} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Failed to get meal: ${id} for user "${user.username}"`,
-        );
+        this.logger.error(MEAL_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(MEAL_NOT_FOUND_ERROR_MESSAGE);
       }
 
       const deletedIngredients = await this.ingredientsRepository.delete({
@@ -211,27 +185,19 @@ export class MealsService {
       });
 
       if (!deletedIngredients) {
-        this.logger.error(
-          `Failed to delete ingredients of meal: ${id} for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to delete ingredients of meal "${id}"`,
-        );
+        this.logger.error(INGREDIENTS_NOT_DELETED_ERROR_MESSAGE);
+        throw new BadRequestException(INGREDIENTS_NOT_DELETED_ERROR_MESSAGE);
       }
 
       const deleted = await this.mealsRepository.delete({ id: meal.id });
 
       if (!deleted) {
-        this.logger.error(
-          `Failed to delete meal: ${id} for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Could not delete meal "${id}"`);
+        this.logger.error(MEAL_NOT_DELETED_ERROR_MESSAGE);
+        throw new BadRequestException(MEAL_NOT_DELETED_ERROR_MESSAGE);
       }
     } catch (error) {
-      this.logger.error(
-        `Failed to delete meal: ${id} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }

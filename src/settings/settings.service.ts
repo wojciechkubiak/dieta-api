@@ -31,9 +31,9 @@ export class SettingsService {
       const gender = Object.keys(Gender);
 
       return { activityLevel, gender };
-    } catch {
-      this.logger.error(`Failed to load the meta data`);
-      throw new NotFoundException(`Failed to load the meta data`);
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -50,8 +50,8 @@ export class SettingsService {
 
       return found;
     } catch (error) {
-      this.logger.error(`Settings for ${user.username} not found.`);
-      throw new NotFoundException(`Settings for ${user.username} not found.`);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -106,10 +106,8 @@ export class SettingsService {
 
       return saved;
     } catch (error) {
-      this.logger.error(
-        `Failed to save the settings for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -145,10 +143,8 @@ export class SettingsService {
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to update settings for user "${user.username}"`,
-      );
-      throw new BadRequestException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }

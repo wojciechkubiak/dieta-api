@@ -38,13 +38,9 @@ export class MeasuresService {
       }
 
       return found;
-    } catch {
-      this.logger.error(
-        `Measure for ${user.username} with ID ${id} not found.`,
-      );
-      throw new NotFoundException(
-        `Measure for ${user.username} with ID ${id} not found.`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -60,9 +56,9 @@ export class MeasuresService {
       }
 
       return found;
-    } catch {
-      this.logger.error(`Measures for ${user.username} not found.`);
-      throw new NotFoundException(`Measures for ${user.username} not found.`);
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -109,7 +105,7 @@ export class MeasuresService {
 
       return saved;
     } catch (error) {
-      this.logger.error(`Failed to add measure for user "${user.username}"`);
+      this.logger.error(error.response.message);
       throw new InternalServerErrorException(error.response.message);
     }
   }
@@ -150,10 +146,8 @@ export class MeasuresService {
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to get ingredient: ${id} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -182,9 +176,7 @@ export class MeasuresService {
         throw new BadRequestException(`Could not delete measure "${id}"`);
       }
     } catch (error) {
-      this.logger.error(
-        `Failed to get measure: ${id} for user "${user.username}"`,
-      );
+      this.logger.error(error.response.message);
       throw new InternalServerErrorException(error.response.message);
     }
   }

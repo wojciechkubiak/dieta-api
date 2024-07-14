@@ -95,8 +95,8 @@ export class IngredientsService {
     user: User,
   ): Promise<Ingredient> {
     const NOT_FOUND_ERROR_MESSAGE = `Meal for "${user.username}" with ID "${mealId}" not found.`;
-    const FAILED_TO_ADD_MEAL_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}."`;
-    const FAILED_TO_ADD_INGREDIENTS_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}."`;
+    const FAILED_TO_ADD_MEAL_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}".`;
+    const FAILED_TO_ADD_INGREDIENTS_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}".`;
 
     try {
       const foundMeal = await this.mealsRepository.findOneBy({ id: mealId });

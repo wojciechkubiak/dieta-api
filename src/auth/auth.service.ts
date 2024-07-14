@@ -27,7 +27,7 @@ export class AuthService {
   private logger = new Logger('AuthService');
 
   async signUp({ username, password }: AuthCredentialsDto): Promise<Auth> {
-    const FAILED_TO_CREATE_ERROR_MESSAGE = `Username "${username}" already exists`;
+    const FAILED_TO_CREATE_ERROR_MESSAGE = `Username "${username}" already exists.`;
 
     try {
       const exists = await this.usersRepository.findOneBy({ username });
@@ -68,7 +68,7 @@ export class AuthService {
   }
 
   async signIn({ username, password }: AuthCredentialsDto): Promise<Auth> {
-    const WRONG_AUTH_ERROR_MESSAGE = `Provided wrong authentication data for the user: "${username}"`;
+    const WRONG_AUTH_ERROR_MESSAGE = `Provided wrong authentication data for the user "${username}".`;
 
     try {
       const user = await this.usersRepository.findOneBy({ username });
