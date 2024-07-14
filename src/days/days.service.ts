@@ -24,6 +24,8 @@ export class DaysService {
   private logger = new Logger('DaysService');
 
   async getByPlanId(planId: string, user: User): Promise<Day[]> {
+    const DAYS_NOT_FOUND_ERROR_MESSAGE = `Days for: ${planId} not found`;
+
     try {
       const found = await this.daysRepository.findBy({
         plan: {
@@ -32,17 +34,23 @@ export class DaysService {
         },
       });
 
-      if (!found?.length)
-        throw new NotFoundException(`Days for: ${planId} not found`);
+      if (!found?.length) {
+        this.logger.error(DAYS_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(DAYS_NOT_FOUND_ERROR_MESSAGE);
+      }
 
       return found;
     } catch (error) {
-      this.logger.error(`Failed to get days for plan: ${planId}`);
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async create(planId: string, user: User): Promise<Day[]> {
+    const ALREADY_EXISTS_ERROR_MESSAGE = `Days for plan "${planId}" and user "${user.username}" already exist`;
+    const PLAN_NOT_FOUND_ERROR_MESSAGE = `Plan "${planId}" for user "${user.username}" not found`;
+    const FAILED_DAYS_CREATION_ERROR_MESSAGE = `Failed to save days for plan "${planId}" and for user "${user.username}"`;
+
     try {
       const exist = await this.daysRepository.findOneBy({
         plan: {
@@ -52,11 +60,8 @@ export class DaysService {
       });
 
       if (exist) {
-        this.logger.error(
-          `Days for plan: ${planId} and user: "${user.username}" already exist`,
-        );
-
-        throw new ConflictException(`Days for plan: ${planId} exist`);
+        this.logger.error(ALREADY_EXISTS_ERROR_MESSAGE);
+        throw new ConflictException(ALREADY_EXISTS_ERROR_MESSAGE);
       }
 
       const plan = await this.plansRepository.findOneBy({
@@ -65,11 +70,8 @@ export class DaysService {
       });
 
       if (!plan) {
-        this.logger.error(
-          `Failed to get plan: ${planId} for user "${user.username}"`,
-        );
-
-        throw new BadRequestException(`Plan: ${planId} not found`);
+        this.logger.error(PLAN_NOT_FOUND_ERROR_MESSAGE);
+        throw new BadRequestException(PLAN_NOT_FOUND_ERROR_MESSAGE);
       }
 
       const days = this.daysRepository.create([
@@ -106,21 +108,15 @@ export class DaysService {
       // TODO: Saved in a good order, returns in bad
       const savedDays = await this.daysRepository.save(days);
 
-      console.log(savedDays);
-
       if (!savedDays) {
-        this.logger.error(
-          `Failed to fully save the plan: "${plan.name}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Plan for the user: ${user.username} not saved`,
-        );
+        this.logger.error(FAILED_DAYS_CREATION_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_DAYS_CREATION_ERROR_MESSAGE);
       }
 
       return savedDays;
     } catch (error) {
-      this.logger.error(`Failed to get days for plan: ${planId}`);
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }
