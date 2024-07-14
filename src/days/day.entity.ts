@@ -18,8 +18,8 @@ export class Day {
 
   @Column('smallint')
   @ApiProperty({
-    example: '0',
-    description: 'Day',
+    example: 0,
+    description: 'Day (0 - MONDAY, 6 - SUNDAY).',
   })
   day: DayName;
 

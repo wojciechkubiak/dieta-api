@@ -87,21 +87,21 @@ export class MealsService {
     const FAILED_TO_ADD_MEAL_ERROR_MESSAGE = `Failed to add meal to the day "${dayId}" for user "${user.username}".`;
 
     try {
-      const foundDay = await this.daysRepository.findOneBy({
+      const day = await this.daysRepository.findOneBy({
         id: dayId,
         plan: {
           user,
         },
       });
 
-      if (!foundDay) {
+      if (!day) {
         this.logger.error(DAY_NOT_FOUND_ERROR_MESSAGE);
         throw new NotFoundException(DAY_NOT_FOUND_ERROR_MESSAGE);
       }
 
       const created = this.mealsRepository.create({
         ...createMealDto,
-        day: foundDay,
+        day,
       });
 
       if (!created) {

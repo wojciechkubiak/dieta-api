@@ -18,8 +18,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signup')
-  @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: HttpStatus.CREATED })
+  @ApiOperation({ summary: 'Create user.' })
+  @ApiResponse({ status: HttpStatus.CREATED, type: Auth })
   @HttpCode(HttpStatus.CREATED)
   signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<Auth> {
     this.logger.verbose(
@@ -29,7 +29,7 @@ export class AuthController {
   }
 
   @Post('/signin')
-  @ApiOperation({ summary: 'Auth user' })
+  @ApiOperation({ summary: 'Auth user.' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: Auth,

@@ -100,16 +100,16 @@ export class IngredientsService {
     const FAILED_TO_ADD_INGREDIENTS_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}".`;
 
     try {
-      const foundMeal = await this.mealsRepository.findOneBy({ id: mealId });
+      const meal = await this.mealsRepository.findOneBy({ id: mealId });
 
-      if (!foundMeal) {
+      if (!meal) {
         this.logger.error(NOT_FOUND_ERROR_MESSAGE);
         throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       const created = this.ingredientsRepository.create({
         ...createIngredientsDto,
-        meal: foundMeal,
+        meal,
       });
 
       if (!created) {

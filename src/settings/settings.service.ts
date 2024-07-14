@@ -71,11 +71,11 @@ export class SettingsService {
     const FAILED_TO_SAVE_ERROR_MESSAGE = `Failed to save the settings for user "${user.username}".`;
 
     try {
-      const found = await this.settingsRepository.findOneBy({
+      const exists = await this.settingsRepository.findOneBy({
         user,
       });
 
-      if (found) {
+      if (exists) {
         this.logger.error(ALREADY_EXISTS_ERROR_MESSAGE);
         throw new ConflictException(ALREADY_EXISTS_ERROR_MESSAGE);
       }

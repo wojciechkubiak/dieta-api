@@ -53,18 +53,6 @@ export class DaysService {
     const FAILED_DAYS_CREATION_ERROR_MESSAGE = `Failed to save days for plan "${planId}" and for user "${user.username}".`;
 
     try {
-      const exist = await this.daysRepository.findOneBy({
-        plan: {
-          id: planId,
-          user,
-        },
-      });
-
-      if (exist) {
-        this.logger.error(ALREADY_EXISTS_ERROR_MESSAGE);
-        throw new ConflictException(ALREADY_EXISTS_ERROR_MESSAGE);
-      }
-
       const plan = await this.plansRepository.findOneBy({
         id: planId,
         user,
@@ -73,6 +61,18 @@ export class DaysService {
       if (!plan) {
         this.logger.error(PLAN_NOT_FOUND_ERROR_MESSAGE);
         throw new BadRequestException(PLAN_NOT_FOUND_ERROR_MESSAGE);
+      }
+
+      const day = await this.daysRepository.findOneBy({
+        plan: {
+          id: planId,
+          user,
+        },
+      });
+
+      if (day) {
+        this.logger.error(ALREADY_EXISTS_ERROR_MESSAGE);
+        throw new ConflictException(ALREADY_EXISTS_ERROR_MESSAGE);
       }
 
       const days = this.daysRepository.create([

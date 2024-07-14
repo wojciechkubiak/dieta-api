@@ -31,7 +31,7 @@ export class PlansController {
 
   @Get()
   @ApiOperation({
-    summary: 'Get all plans for specific user',
+    summary: 'Get all user plans.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -45,7 +45,7 @@ export class PlansController {
 
   @Get('filter')
   @ApiOperation({
-    summary: 'Get all plans for specific user for given status',
+    summary: 'Get all user plans with status.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -61,7 +61,7 @@ export class PlansController {
 
   @Get(':planId')
   @ApiOperation({
-    summary: 'Search for a plan of specific user',
+    summary: 'Get user plan with provided plan ID.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -76,7 +76,7 @@ export class PlansController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create empty plan' })
+  @ApiOperation({ summary: 'Create empty plan.' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: Plan,
@@ -90,7 +90,7 @@ export class PlansController {
   }
 
   @Put(':id/name')
-  @ApiOperation({ summary: 'Update plan name' })
+  @ApiOperation({ summary: 'Update plan name.' })
   @ApiResponse({
     status: HttpStatus.OK,
     type: Plan,
@@ -105,7 +105,7 @@ export class PlansController {
   }
 
   @Put(':id/status')
-  @ApiOperation({ summary: 'Update plan status' })
+  @ApiOperation({ summary: 'Update plan status.' })
   @ApiResponse({
     status: HttpStatus.OK,
     type: Plan,

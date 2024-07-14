@@ -19,14 +19,14 @@ export class Plan {
 
   @Column({ length: 50 })
   @ApiProperty({
-    example: 'New plan 1',
-    description: 'Plan name',
+    example: 'New Diet Plan',
+    description: 'Diet plan name.',
   })
   name: string;
 
   @Column({ default: Status.ACTIVE })
   @ApiProperty({
-    description: 'Status (default: ACTIVE)',
+    description: 'Status: ACTIVE/DISABLED (default: ACTIVE).',
     example: 0,
   })
   status: Status;

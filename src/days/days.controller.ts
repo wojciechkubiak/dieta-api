@@ -24,7 +24,7 @@ export class DaysController {
 
   @Get(':planId')
   @ApiOperation({
-    summary: 'Get all days for the plan',
+    summary: 'Get all days based on plan ID.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -40,7 +40,7 @@ export class DaysController {
 
   @Post(':planId/generate')
   @ApiOperation({
-    summary: 'Generate full week for the plan',
+    summary: 'Generate 7 week days for plan ID.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
