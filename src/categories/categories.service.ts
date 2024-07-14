@@ -163,7 +163,7 @@ export class CategoriesService {
         );
       }
 
-      const deleted = await this.categoriesRepository.delete(found);
+      const deleted = await this.categoriesRepository.delete({ id: found.id });
 
       if (!deleted) {
         this.logger.error(

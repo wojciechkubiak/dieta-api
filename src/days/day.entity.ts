@@ -14,10 +14,6 @@ import { Meal } from 'src/meals/meal.entity';
 @Entity()
 export class Day {
   @PrimaryGeneratedColumn('uuid')
-  @ApiProperty({
-    example: '42ce6d29-ddac-4ac3-9a18-d52a7913b895',
-    description: 'ID',
-  })
   id: string;
 
   @Column('smallint')

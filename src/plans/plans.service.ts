@@ -12,16 +12,12 @@ import { CreatePlanDto } from './dto/create.dto';
 import { UpdateNameDto, UpdateStatusDto } from './dto/update.dto';
 import { FilterStatusDto } from './dto/filter.dto';
 import { User } from '../auth/user.entity';
-import { DayName } from 'src/days/day.enum';
-import { Day } from 'src/days/day.entity';
 
 @Injectable()
 export class PlansService {
   constructor(
     @Inject('PLANS_REPOSITORY')
     private plansRepository: Repository<Plan>,
-    @Inject('DAYS_REPOSITORY')
-    private daysRepository: Repository<Day>,
   ) {}
   private logger = new Logger('PlansService');
 
@@ -73,7 +69,6 @@ export class PlansService {
 
         throw new BadRequestException(`Plan: ${planId} not found`);
       }
-
       return found;
     } catch (error) {
       this.logger.error(
@@ -86,32 +81,6 @@ export class PlansService {
 
   async create({ name }: CreatePlanDto, user: User): Promise<Plan> {
     try {
-      const days = this.daysRepository.create([
-        {
-          day: DayName.MONDAY,
-        },
-        {
-          day: DayName.TUESDAY,
-        },
-        {
-          day: DayName.WEDNESDAY,
-        },
-        {
-          day: DayName.THURSDAY,
-        },
-        {
-          day: DayName.FRIDAY,
-        },
-        {
-          day: DayName.SATURDAY,
-        },
-        {
-          day: DayName.SUNDAY,
-        },
-      ]);
-
-      const savedDays = await this.daysRepository.save(days);
-
       const plan = this.plansRepository.create({
         name,
         user,
@@ -119,9 +88,7 @@ export class PlansService {
 
       const savedPlan = await this.plansRepository.save(plan);
 
-      console.log(days);
-
-      if (!savedPlan || !savedDays) {
+      if (!savedPlan) {
         this.logger.error(
           `Failed to save the plan: "${plan.name}" for user "${user.username}"`,
         );

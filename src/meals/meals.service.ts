@@ -11,6 +11,7 @@ import { User } from 'src/auth/user.entity';
 import { Day } from 'src/days/day.entity';
 import { Repository } from 'typeorm';
 import { MealsDto } from './dto/common.dto';
+import { Ingredient } from 'src/ingredients/ingredient.entity';
 
 @Injectable()
 export class MealsService {
@@ -19,6 +20,8 @@ export class MealsService {
     private mealsRepository: Repository<Meal>,
     @Inject('DAYS_REPOSITORY')
     private daysRepository: Repository<Day>,
+    @Inject('INGREDIENTS_REPOSITORY')
+    private ingredientsRepository: Repository<Ingredient>,
   ) {}
   private logger = new Logger('MealsService');
 
@@ -34,21 +37,17 @@ export class MealsService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Ingredient for ${user.username} with ID ${id} not found.`,
-        );
+        this.logger.error(`Meal with ID ${id} for ${user.username} not found.`);
         throw new NotFoundException(
-          `Ingredient for ${user.username} with ID ${id} not found.`,
+          `Meal with ID ${id} for ${user.username} not found.`,
         );
       }
 
       return found;
     } catch {
-      this.logger.error(
-        `Category for ${user.username} with ID ${id} not found.`,
-      );
+      this.logger.error(`Meal with ID ${id} for ${user.username} not found.`);
       throw new NotFoundException(
-        `Category for ${user.username} with ID ${id} not found.`,
+        `Meal with ID ${id} for ${user.username} not found.`,
       );
     }
   }
@@ -63,6 +62,8 @@ export class MealsService {
           },
         },
       });
+
+      // TODO: Fix the order
 
       if (!found.length) {
         this.logger.error(
@@ -185,9 +186,9 @@ export class MealsService {
     }
   }
 
-  async remove(id: string, user: User): Promise<boolean> {
+  async remove(id: string, user: User): Promise<void> {
     try {
-      const found = await this.mealsRepository.findOneBy({
+      const meal = await this.mealsRepository.findOneBy({
         id,
         day: {
           plan: {
@@ -196,7 +197,7 @@ export class MealsService {
         },
       });
 
-      if (!found) {
+      if (!meal) {
         this.logger.error(
           `Failed to get meal: ${id} for user "${user.username}"`,
         );
@@ -205,19 +206,30 @@ export class MealsService {
         );
       }
 
-      const deleted = await this.mealsRepository.delete(found);
+      const deletedIngredients = await this.ingredientsRepository.delete({
+        meal: { id: meal.id },
+      });
+
+      if (!deletedIngredients) {
+        this.logger.error(
+          `Failed to delete ingredients of meal: ${id} for user "${user.username}"`,
+        );
+        throw new BadRequestException(
+          `Failed to delete ingredients of meal "${id}"`,
+        );
+      }
+
+      const deleted = await this.mealsRepository.delete({ id: meal.id });
 
       if (!deleted) {
         this.logger.error(
-          `Failed to get meal: ${id} for user "${user.username}"`,
+          `Failed to delete meal: ${id} for user "${user.username}"`,
         );
         throw new BadRequestException(`Could not delete meal "${id}"`);
       }
-
-      return true;
     } catch (error) {
       this.logger.error(
-        `Failed to get meal: ${id} for user "${user.username}"`,
+        `Failed to delete meal: ${id} for user "${user.username}"`,
       );
       throw new InternalServerErrorException(error);
     }

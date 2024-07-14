@@ -223,7 +223,7 @@ export class IngredientsService {
         );
       }
 
-      const deleted = await this.ingredientsRepository.delete(found);
+      const deleted = await this.ingredientsRepository.delete({ id: found.id });
 
       if (!deleted) {
         this.logger.error(

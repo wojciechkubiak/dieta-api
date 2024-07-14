@@ -16,10 +16,10 @@ import { User } from 'src/auth/user.entity';
 @Injectable()
 export class DaysService {
   constructor(
-    @Inject('PLAN_REPOSITORY')
-    private plansRepository: Repository<Plan>,
-    @Inject('DAY_REPOSITORY')
+    @Inject('DAYS_REPOSITORY')
     private daysRepository: Repository<Day>,
+    @Inject('PLANS_REPOSITORY')
+    private plansRepository: Repository<Plan>,
   ) {}
   private logger = new Logger('DaysService');
 
@@ -103,7 +103,10 @@ export class DaysService {
         },
       ]);
 
+      // TODO: Saved in a good order, returns in bad
       const savedDays = await this.daysRepository.save(days);
+
+      console.log(savedDays);
 
       if (!savedDays) {
         this.logger.error(

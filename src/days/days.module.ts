@@ -9,6 +9,6 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [DatabaseModule, AuthModule],
   controllers: [DaysController],
-  providers: [DaysService, ...plansProviders, ...daysProviders],
+  providers: [DaysService, ...daysProviders, ...plansProviders],
 })
 export class DaysModule {}

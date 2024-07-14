@@ -31,6 +31,5 @@ export class Meal {
   day: Day;
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.meal, { eager: true })
-  @Exclude({ toPlainOnly: true })
   ingredients: Ingredient[];
 }
