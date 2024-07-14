@@ -33,7 +33,10 @@ export class PlansService {
         throw new NotFoundException(PLANS_NOT_FOUND_ERROR_MESSAGE);
       }
 
-      return found;
+      return found.map((plan) => ({
+        ...plan,
+        days: plan.days.sort((a, b) => a.day - b.day),
+      }));
     } catch (error) {
       this.logger.error(error.response.message);
       throw new InternalServerErrorException(error.response.message);
