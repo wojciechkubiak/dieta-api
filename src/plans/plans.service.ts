@@ -22,10 +22,15 @@ export class PlansService {
   private logger = new Logger('PlansService');
 
   async getAll(user: User): Promise<Plan[]> {
+    const PLANS_NOT_FOUND_ERROR_MESSAGE = `Plans for "${user.username}" not found.`;
+
     try {
       const found = await this.plansRepository.findBy({ user });
 
-      if (!found.length) return [];
+      if (!found.length) {
+        this.logger.error(PLANS_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(PLANS_NOT_FOUND_ERROR_MESSAGE);
+      }
 
       return found;
     } catch (error) {
@@ -37,14 +42,18 @@ export class PlansService {
   async getByStatus(query: FilterStatusDto, user: User): Promise<Plan> {
     const { status } = query;
 
+    const PLANS_NOT_FOUND_ERROR_MESSAGE = `Plans for "${user.username}" and status "${status}" not found.`;
+
     try {
       const found = await this.plansRepository.findOneBy({
         status,
         user,
       });
 
-      if (!found)
-        throw new NotFoundException(`Plan with status: ${status} not found`);
+      if (!found) {
+        this.logger.error(PLANS_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(PLANS_NOT_FOUND_ERROR_MESSAGE);
+      }
 
       return found;
     } catch (error) {
@@ -54,6 +63,8 @@ export class PlansService {
   }
 
   async getById(planId: string, user: User): Promise<Plan> {
+    const PLAN_NOT_FOUND_ERROR_MESSAGE = `Plan "${planId}" for "${user.username}" not found.`;
+
     try {
       const found = await this.plansRepository.findOneBy({
         id: planId,
@@ -61,12 +72,10 @@ export class PlansService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get plan: ${planId} for user "${user.username}"`,
-        );
-
-        throw new BadRequestException(`Plan: ${planId} not found`);
+        this.logger.error(PLAN_NOT_FOUND_ERROR_MESSAGE);
+        throw new BadRequestException(PLAN_NOT_FOUND_ERROR_MESSAGE);
       }
+
       return found;
     } catch (error) {
       this.logger.error(error.response.message);
@@ -75,6 +84,8 @@ export class PlansService {
   }
 
   async create({ name }: CreatePlanDto, user: User): Promise<Plan> {
+    const FAILED_TO_SAVE_PLAN_ERROR_MESSAGE = `Failed to create the plan "${name}" for user "${user.username}".`;
+
     try {
       const plan = this.plansRepository.create({
         name,
@@ -84,12 +95,8 @@ export class PlansService {
       const savedPlan = await this.plansRepository.save(plan);
 
       if (!savedPlan) {
-        this.logger.error(
-          `Failed to save the plan: "${plan.name}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Plan for the user: ${user.username} not saved`,
-        );
+        this.logger.error(FAILED_TO_SAVE_PLAN_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_SAVE_PLAN_ERROR_MESSAGE);
       }
 
       return savedPlan;
@@ -104,16 +111,15 @@ export class PlansService {
     { name }: UpdateNameDto,
     user: User,
   ): Promise<Plan> {
+    const PLAN_NOT_FOUND_ERROR_MESSAGE = `Plan "${id}" for "${user.username}" not found.`;
+    const FAILED_TO_UPDATE_NAME_ERROR_MESSAGE = `Failed to update plan "${id}" with name "${name}" for user "${user.username}".`;
+
     try {
       const found = await this.plansRepository.findOneBy({ id, user });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get plan: ${id} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Plan: ${id} not found for the user: ${user.username}`,
-        );
+        this.logger.error(PLAN_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(PLAN_NOT_FOUND_ERROR_MESSAGE);
       }
 
       found.name = name;
@@ -121,10 +127,8 @@ export class PlansService {
       const updated = await this.plansRepository.save(found);
 
       if (!updated) {
-        this.logger.error(
-          `Failed to update plan: ${id} with name equal to "${name}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Failed to update plan: ${id}`);
+        this.logger.error(FAILED_TO_UPDATE_NAME_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_UPDATE_NAME_ERROR_MESSAGE);
       }
 
       return updated;
@@ -139,20 +143,24 @@ export class PlansService {
     { status }: UpdateStatusDto,
     user: User,
   ): Promise<Plan> {
+    const PLAN_NOT_FOUND_ERROR_MESSAGE = `Plan "${id}" for "${user.username}" not found.`;
+    const FAILED_TO_UPDATE_NAME_ERROR_MESSAGE = `Failed to update plan "${id}" with status "${status}" for user "${user.username}".`;
+
     try {
       const found = await this.plansRepository.findOneBy({ id, user });
 
-      if (!found) throw new BadRequestException(`Plan: ${id} not found for`);
+      if (!found) {
+        this.logger.error(PLAN_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(PLAN_NOT_FOUND_ERROR_MESSAGE);
+      }
 
       found.status = status;
 
       const updated = await this.plansRepository.save(found);
 
       if (!updated) {
-        this.logger.error(
-          `Failed to update plan: ${id} with status equal to "${status}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Failed to update plan: ${id}`);
+        this.logger.error(FAILED_TO_UPDATE_NAME_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_UPDATE_NAME_ERROR_MESSAGE);
       }
 
       return updated;
