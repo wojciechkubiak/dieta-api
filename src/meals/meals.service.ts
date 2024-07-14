@@ -26,7 +26,7 @@ export class MealsService {
   private logger = new Logger('MealsService');
 
   async getById(id: string, user: User): Promise<Meal> {
-    const MEAL_NOT_FOUND_ERROR_MESSAGE = `Meal with ID ${id} for ${user.username} not found.`;
+    const MEAL_NOT_FOUND_ERROR_MESSAGE = `Meal with ID "${id}" for "${user.username}" not found.`;
 
     try {
       const found = await this.mealsRepository.findOneBy({
@@ -162,8 +162,8 @@ export class MealsService {
 
   async remove(id: string, user: User): Promise<void> {
     const MEAL_NOT_FOUND_ERROR_MESSAGE = `Meal "${id}" for user "${user.username}" not found.`;
-    const INGREDIENTS_NOT_DELETED_ERROR_MESSAGE = `Failed to delete ingredients of meal: ${id} for user "${user.username}"`;
-    const MEAL_NOT_DELETED_ERROR_MESSAGE = `Failed to delete meal: ${id} for user "${user.username}"`;
+    const INGREDIENTS_NOT_DELETED_ERROR_MESSAGE = `Failed to delete ingredients of meal "${id}" for user "${user.username}"`;
+    const MEAL_NOT_DELETED_ERROR_MESSAGE = `Failed to delete meal "${id}" for user "${user.username}"`;
 
     try {
       const meal = await this.mealsRepository.findOneBy({
