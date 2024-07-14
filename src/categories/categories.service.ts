@@ -11,11 +11,12 @@ import {
 import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
 import { CategoryDto } from './dto/common.dto';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class CategoriesService {
   constructor(
-    @Inject('CATEGORIES_REPOSITORY')
+    @Inject(RepositoryType.CATEGORIES)
     private categoriesRepository: Repository<Category>,
   ) {}
   private logger = new Logger('MealsService');

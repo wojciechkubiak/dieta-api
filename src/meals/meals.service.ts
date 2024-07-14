@@ -12,15 +12,16 @@ import { Day } from 'src/days/day.entity';
 import { Repository } from 'typeorm';
 import { MealsDto } from './dto/common.dto';
 import { Ingredient } from 'src/ingredients/ingredient.entity';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class MealsService {
   constructor(
-    @Inject('MEALS_REPOSITORY')
+    @Inject(RepositoryType.MEALS)
     private mealsRepository: Repository<Meal>,
-    @Inject('DAYS_REPOSITORY')
+    @Inject(RepositoryType.DAYS)
     private daysRepository: Repository<Day>,
-    @Inject('INGREDIENTS_REPOSITORY')
+    @Inject(RepositoryType.INGREDIENTS)
     private ingredientsRepository: Repository<Ingredient>,
   ) {}
   private logger = new Logger('MealsService');

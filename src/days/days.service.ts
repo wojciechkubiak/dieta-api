@@ -12,13 +12,14 @@ import { Day } from './day.entity';
 import { DayName } from './day.enum';
 import { Plan } from 'src/plans/plan.entity';
 import { User } from 'src/auth/user.entity';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class DaysService {
   constructor(
-    @Inject('DAYS_REPOSITORY')
+    @Inject(RepositoryType.DAYS)
     private daysRepository: Repository<Day>,
-    @Inject('PLANS_REPOSITORY')
+    @Inject(RepositoryType.PLANS)
     private plansRepository: Repository<Plan>,
   ) {}
   private logger = new Logger('DaysService');

@@ -12,11 +12,12 @@ import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
 import { CreateMeasureDto } from './dto/create.dto';
 import { EditMeasureDto } from './dto/edit.dto';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class MeasuresService {
   constructor(
-    @Inject('MEASURES_REPOSITORY')
+    @Inject(RepositoryType.MEASURES)
     private measuresRepository: Repository<Measure>,
   ) {}
   private logger = new Logger('MeasuresService');

@@ -12,11 +12,12 @@ import { CreatePlanDto } from './dto/create.dto';
 import { UpdateNameDto, UpdateStatusDto } from './dto/update.dto';
 import { FilterStatusDto } from './dto/filter.dto';
 import { User } from '../auth/user.entity';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class PlansService {
   constructor(
-    @Inject('PLANS_REPOSITORY')
+    @Inject(RepositoryType.PLANS)
     private plansRepository: Repository<Plan>,
   ) {}
   private logger = new Logger('PlansService');

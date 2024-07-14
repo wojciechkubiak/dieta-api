@@ -14,11 +14,12 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './user.entity';
 import { Auth } from './auth.model';
 import { ConfigService } from '@nestjs/config';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('USER_REPOSITORY')
+    @Inject(RepositoryType.USERS)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
     @Inject(ConfigService)

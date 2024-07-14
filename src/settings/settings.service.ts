@@ -13,11 +13,12 @@ import { ActivityLevel, Gender } from './settings.enum';
 import { CreateSettingsDto } from './dto/create.dto';
 import { User } from 'src/auth/user.entity';
 import { UpdateSettingsDto } from './dto/update.dto';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class SettingsService {
   constructor(
-    @Inject('SETTINGS_REPOSITORY')
+    @Inject(RepositoryType.SETTINGS)
     private settingsRepository: Repository<Settings>,
   ) {}
   private logger = new Logger('SettingsService');

@@ -13,13 +13,14 @@ import { CreateIngredientsDto } from './dto/create.dto';
 import { Meal } from 'src/meals/meal.entity';
 import { EditIngredientDto } from './dto/edit.dto';
 import { Unit } from './ingredients.enum';
+import { RepositoryType } from 'src/repository.consts';
 
 @Injectable()
 export class IngredientsService {
   constructor(
-    @Inject('INGREDIENTS_REPOSITORY')
+    @Inject(RepositoryType.INGREDIENTS)
     private ingredientsRepository: Repository<Ingredient>,
-    @Inject('MEALS_REPOSITORY')
+    @Inject(RepositoryType.MEALS)
     private mealsRepository: Repository<Meal>,
   ) {}
   private logger = new Logger('IngredientsService');
