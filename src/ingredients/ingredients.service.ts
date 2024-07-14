@@ -25,15 +25,19 @@ export class IngredientsService {
   private logger = new Logger('IngredientsService');
 
   async getMeta(): Promise<string[]> {
+    const FAILED_TO_LOAD_META_DATA_ERROR_MESSAGE = `Failed to load the meta data.`;
+
     try {
       return Object.keys(Unit);
     } catch {
-      this.logger.error(`Failed to load the meta data`);
-      throw new NotFoundException(`Failed to load the meta data`);
+      this.logger.error(FAILED_TO_LOAD_META_DATA_ERROR_MESSAGE);
+      throw new NotFoundException(FAILED_TO_LOAD_META_DATA_ERROR_MESSAGE);
     }
   }
 
   async getById(id: string, user: User): Promise<Ingredient> {
+    const NOT_FOUND_ERROR_MESSAGE = `Ingredient for ${user.username} with ID ${id} not found.`;
+
     try {
       const found = await this.ingredientsRepository.findOneBy({
         id,
@@ -47,26 +51,20 @@ export class IngredientsService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Ingredient for ${user.username} with ID ${id} not found.`,
-        );
-        throw new NotFoundException(
-          `Ingredient for ${user.username} with ID ${id} not found.`,
-        );
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
-    } catch {
-      this.logger.error(
-        `Category for ${user.username} with ID ${id} not found.`,
-      );
-      throw new NotFoundException(
-        `Category for ${user.username} with ID ${id} not found.`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async getAll(mealId: string, user: User): Promise<Ingredient[]> {
+    const NOT_FOUND_ERROR_MESSAGE = `Ingredients for meal ${mealId} of the user ${user.username} not found.`;
+
     try {
       const found = await this.ingredientsRepository.findBy({
         meal: {
@@ -80,22 +78,14 @@ export class IngredientsService {
       });
 
       if (!found.length) {
-        this.logger.error(
-          `Ingredients for meal ${mealId} of the user ${user.username} not found.`,
-        );
-        throw new NotFoundException(
-          `Ingredients for meal ${mealId} of the user ${user.username} not found.`,
-        );
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
-    } catch {
-      this.logger.error(
-        `Ingredients for meal ${mealId} of the user ${user.username} not found.`,
-      );
-      throw new NotFoundException(
-        `Ingredients for meal ${mealId} of the user ${user.username} not found.`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -104,16 +94,16 @@ export class IngredientsService {
     mealId: string,
     user: User,
   ): Promise<Ingredient> {
+    const NOT_FOUND_ERROR_MESSAGE = `Meal for "${user.username}" with ID "${mealId}" not found.`;
+    const FAILED_TO_ADD_MEAL_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}."`;
+    const FAILED_TO_ADD_INGREDIENTS_ERROR_MESSAGE = `Failed to add ingredients to the meal "${mealId}" for user "${user.username}."`;
+
     try {
       const foundMeal = await this.mealsRepository.findOneBy({ id: mealId });
 
       if (!foundMeal) {
-        this.logger.error(
-          `Meal for ${user.username} with ID ${mealId} not found.`,
-        );
-        throw new NotFoundException(
-          `Meal for ${user.username} with ID ${mealId} not found.`,
-        );
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       const created = this.ingredientsRepository.create({
@@ -122,33 +112,21 @@ export class IngredientsService {
       });
 
       if (!created) {
-        this.logger.error(
-          `Failed to add ingredients to the meal "${mealId}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to add ingredients to the meal "${mealId}" for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_ADD_MEAL_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_ADD_MEAL_ERROR_MESSAGE);
       }
 
       const saved = await this.ingredientsRepository.save(created);
 
       if (!saved) {
-        this.logger.error(
-          `Failed to add ingredients to the meal "${mealId}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to add ingredients to the meal "${mealId}" for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_ADD_INGREDIENTS_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_ADD_INGREDIENTS_ERROR_MESSAGE);
       }
 
       return saved;
-    } catch {
-      this.logger.error(
-        `Failed to add ingredients to the meal "${mealId}" for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(
-        `Failed to add ingredients to the meal "${mealId}" for user "${user.username}"`,
-      );
+    } catch (error) {
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
@@ -157,6 +135,9 @@ export class IngredientsService {
     id: string,
     user: User,
   ): Promise<Ingredient> {
+    const NOT_FOUND_ERROR_MESSAGE = `Ingredient "${id}" for user "${user.username}" not found.`;
+    const FAILED_UPDATE_ERROR_MESSAGE = `Failed to update ingredient "${id}" for user "${user.username}".`;
+
     try {
       let found = await this.ingredientsRepository.findOneBy({
         id,
@@ -170,12 +151,8 @@ export class IngredientsService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get ingredient: ${id} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Failed to get ingredient: ${id} for user "${user.username}"`,
-        );
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       found = {
@@ -186,22 +163,21 @@ export class IngredientsService {
       const updated = await this.ingredientsRepository.save(found);
 
       if (!updated) {
-        this.logger.error(
-          `Failed to update ingredient: ${id} for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Failed to update ingredient: ${id}`);
+        this.logger.error(FAILED_UPDATE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_UPDATE_ERROR_MESSAGE);
       }
 
       return updated;
     } catch (error) {
-      this.logger.error(
-        `Failed to get ingredient: ${id} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 
   async remove(id: string, user: User): Promise<void> {
+    const NOT_FOUND_ERROR_MESSAGE = `Ingredient "${id}" for user "${user.username}" not found.`;
+    const FAILED_TO_DELETE_ERROR_MESSAGE = `Failed to delete ingredient "${id}" for user "${user.username}".`;
+
     try {
       const found = await this.ingredientsRepository.findOneBy({
         id,
@@ -215,27 +191,19 @@ export class IngredientsService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get ingredient: ${id} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Failed to get ingredient: ${id} for user "${user.username}"`,
-        );
+        this.logger.error(NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(NOT_FOUND_ERROR_MESSAGE);
       }
 
       const deleted = await this.ingredientsRepository.delete({ id: found.id });
 
       if (!deleted) {
-        this.logger.error(
-          `Failed to delete ingredient: ${id} for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Could not delete ingredient "${id}"`);
+        this.logger.error(FAILED_TO_DELETE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_DELETE_ERROR_MESSAGE);
       }
     } catch (error) {
-      this.logger.error(
-        `Failed to get ingredient: ${id} for user "${user.username}"`,
-      );
-      throw new InternalServerErrorException(error);
+      this.logger.error(error.response.message);
+      throw new InternalServerErrorException(error.response.message);
     }
   }
 }
