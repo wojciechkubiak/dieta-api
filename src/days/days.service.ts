@@ -40,7 +40,7 @@ export class DaysService {
         throw new NotFoundException(DAYS_NOT_FOUND_ERROR_MESSAGE);
       }
 
-      return found;
+      return found.sort((a, b) => a.day - b.day);
     } catch (error) {
       this.logger.error(error.response.message);
       throw new InternalServerErrorException(error.response.message);
@@ -106,7 +106,6 @@ export class DaysService {
         },
       ]);
 
-      // TODO: Saved in a good order, returns in bad
       const savedDays = await this.daysRepository.save(days);
 
       if (!savedDays) {

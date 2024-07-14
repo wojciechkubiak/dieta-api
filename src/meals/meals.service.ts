@@ -1,6 +1,7 @@
 import { Meal } from './meal.entity';
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -64,14 +65,12 @@ export class MealsService {
         },
       });
 
-      // TODO: Fix the order
-
       if (!found.length) {
         this.logger.error(MEALS_NOT_FOUND_ERROR_MESSAGE);
         throw new NotFoundException(MEALS_NOT_FOUND_ERROR_MESSAGE);
       }
 
-      return found;
+      return found.sort((a, b) => a.order - b.order);
     } catch (error) {
       this.logger.error(error.response.message);
       throw new InternalServerErrorException(error.response.message);
@@ -83,10 +82,26 @@ export class MealsService {
     dayId: string,
     user: User,
   ): Promise<Meal> {
+    const ORDER_TAKEN_ERROR_MESSAGE = `Two meals of ${user.username} have the same order.`;
     const DAY_NOT_FOUND_ERROR_MESSAGE = `Day for "${user.username}" with ID "${dayId}" not found.`;
     const FAILED_TO_ADD_MEAL_ERROR_MESSAGE = `Failed to add meal to the day "${dayId}" for user "${user.username}".`;
 
     try {
+      const orderTaken = await this.mealsRepository.findOneBy({
+        order: createMealDto.order,
+        day: {
+          id: dayId,
+          plan: {
+            user,
+          },
+        },
+      });
+
+      if (orderTaken) {
+        this.logger.error(ORDER_TAKEN_ERROR_MESSAGE);
+        throw new ConflictException(ORDER_TAKEN_ERROR_MESSAGE);
+      }
+
       const day = await this.daysRepository.findOneBy({
         id: dayId,
         plan: {
@@ -118,6 +133,7 @@ export class MealsService {
 
       return saved;
     } catch (error) {
+      console.log(error);
       this.logger.error(error.response.message);
       throw new InternalServerErrorException(error.response.message);
     }

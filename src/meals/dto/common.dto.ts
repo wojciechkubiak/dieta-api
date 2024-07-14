@@ -5,4 +5,8 @@ export class MealsDto {
   @ApiProperty()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  order: number;
 }

@@ -19,6 +19,13 @@ export class Meal {
   })
   id: string;
 
+  @Column({ unique: true })
+  @ApiProperty({
+    example: 0,
+    description: 'Order',
+  })
+  order: number;
+
   @Column()
   @ApiProperty({
     example: 'Breakfast',
