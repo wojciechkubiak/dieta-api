@@ -43,7 +43,7 @@ export class DaysController {
     summary: 'Generate 7 week days for plan ID.',
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: [Day],
   })
   @HttpCode(HttpStatus.CREATED)

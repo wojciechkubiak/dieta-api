@@ -11,11 +11,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MealsService } from './meals.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { MealsDto } from './dto/common.dto';
+import { Meal } from './meal.entity';
 
 @ApiTags('meals')
 @Controller('meals')
@@ -24,13 +25,23 @@ export class MealsController {
   constructor(private mealsService: MealsService) {}
 
   @Get('days/:dayId')
+  @ApiOperation({ summary: 'Get meals for specific day.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [Meal],
+  })
   @HttpCode(HttpStatus.OK)
   async getAll(@Param('dayId') dayId: string, @GetUser() user: User) {
     return this.mealsService.getAll(dayId, user);
   }
 
   @Post('days/:dayId')
-  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Create new meal for specific day.' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: Meal,
+  })
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createMealDto: MealsDto,
     @Param('dayId') dayId: string,
@@ -40,12 +51,22 @@ export class MealsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get specific meal.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Meal,
+  })
   @HttpCode(HttpStatus.OK)
   async getById(@GetUser() user: User, @Param('id') id: string) {
     return this.mealsService.getById(id, user);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Edit specific meal.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Meal,
+  })
   @HttpCode(HttpStatus.OK)
   async edit(
     @Body() editMealDto: MealsDto,
@@ -56,6 +77,10 @@ export class MealsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete specific meal.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+  })
   @HttpCode(HttpStatus.OK)
   async delete(@GetUser() user: User, @Param('id') id: string) {
     return this.mealsService.remove(id, user);
