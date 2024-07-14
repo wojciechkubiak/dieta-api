@@ -19,7 +19,7 @@ export class CategoriesService {
     @Inject(RepositoryType.CATEGORIES)
     private categoriesRepository: Repository<Category>,
   ) {}
-  private logger = new Logger('MealsService');
+  private logger = new Logger('CategoriesService');
 
   async getById(id: string, user: User): Promise<any> {
     const CATEGORY_NOT_FOUND_ERROR_MESSAGE = `Category for "${user.username}" with ID ${id} not found.`;
