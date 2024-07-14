@@ -21,6 +21,8 @@ export class CategoriesService {
   private logger = new Logger('MealsService');
 
   async getById(id: string, user: User): Promise<any> {
+    const CATEGORY_NOT_FOUND_ERROR_MESSAGE = `Category for ${user.username} with ID ${id} not found.`;
+
     try {
       const found = await this.categoriesRepository.findOneBy({
         id,
@@ -28,12 +30,8 @@ export class CategoriesService {
       });
 
       if (!found) {
-        this.logger.error(
-          `Category for ${user.username} with ID ${id} not found.`,
-        );
-        throw new NotFoundException(
-          `Category for ${user.username} with ID ${id} not found.`,
-        );
+        this.logger.error(CATEGORY_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(CATEGORY_NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
@@ -44,16 +42,15 @@ export class CategoriesService {
   }
 
   async getAll(user: User): Promise<any> {
+    const CATEGORIES_NOT_FOUND_ERROR_MESSAGE = `Categories for ${user.username} not found.`;
     try {
       const found = await this.categoriesRepository.findBy({
         user,
       });
 
       if (!found.length) {
-        this.logger.error(`Categories for ${user.username} not found.`);
-        throw new NotFoundException(
-          `Categories for ${user.username} not found.`,
-        );
+        this.logger.error(CATEGORIES_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(CATEGORIES_NOT_FOUND_ERROR_MESSAGE);
       }
 
       return found;
@@ -64,6 +61,10 @@ export class CategoriesService {
   }
 
   async create({ category }: CategoryDto, user: User): Promise<any> {
+    const CATEGORY_EXISTS_ERROR_MESSAGE = `Category "${category}" for user "${user.username}" already exist`;
+    const FAILED_TO_CREATE_ERROR_MESSAGE = `Failed to create the category "${category}" for user "${user.username}"`;
+    const FAILED_TO_SAVE_ERROR_MESSAGE = `Failed to save the category "${category}" for user "${user.username}"`;
+
     try {
       const exist = await this.categoriesRepository.findOneBy({
         category,
@@ -71,35 +72,22 @@ export class CategoriesService {
       });
 
       if (exist) {
-        this.logger.error(
-          `Category "${category}" for user: "${user.username}" already exist`,
-        );
-
-        throw new ConflictException(
-          `Category "${category}" for user: "${user.username}" already exist`,
-        );
+        this.logger.error(CATEGORY_EXISTS_ERROR_MESSAGE);
+        throw new ConflictException(CATEGORY_EXISTS_ERROR_MESSAGE);
       }
 
       const created = this.categoriesRepository.create({ category, user });
 
       if (!created) {
-        this.logger.error(
-          `Failed to create the category "${category}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to create the category "${category}" for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_CREATE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_CREATE_ERROR_MESSAGE);
       }
 
       const saved = await this.categoriesRepository.save(created);
 
       if (!saved) {
-        this.logger.error(
-          `Failed to save the category "${category}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(
-          `Failed to save the category "${category}" for user "${user.username}"`,
-        );
+        this.logger.error(FAILED_TO_SAVE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_TO_SAVE_ERROR_MESSAGE);
       }
 
       return saved;
@@ -110,16 +98,15 @@ export class CategoriesService {
   }
 
   async edit({ category }: CategoryDto, id: string, user: User): Promise<any> {
+    const CATEGORY_NOT_FOUND_ERROR_MESSAGE = `Category "${id}" for the user "${user.username}" not found`;
+    const FAILED_UPDATE_ERROR_MESSAGE = `Failed to update category "${id}" with name "${category}" for user "${user.username}"`;
+
     try {
       const found = await this.categoriesRepository.findOneBy({ id, user });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get category: ${id} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Category: ${id} not found for the user: ${user.username}`,
-        );
+        this.logger.error(CATEGORY_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(CATEGORY_NOT_FOUND_ERROR_MESSAGE);
       }
 
       found.category = category;
@@ -127,10 +114,8 @@ export class CategoriesService {
       const updated = await this.categoriesRepository.save(found);
 
       if (!updated) {
-        this.logger.error(
-          `Failed to update category: ${id} with name "${category}" for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Failed to update category: ${id}`);
+        this.logger.error(FAILED_UPDATE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_UPDATE_ERROR_MESSAGE);
       }
 
       return updated;
@@ -141,25 +126,22 @@ export class CategoriesService {
   }
 
   async delete(id: string, user: User): Promise<any> {
+    const CATEGORY_NOT_FOUND_ERROR_MESSAGE = `Category "${id}" for the user "${user.username}" not found`;
+    const FAILED_DELETE_ERROR_MESSAGE = `Failed to delete category "${id}" for user "${user.username}"`;
+
     try {
       const found = await this.categoriesRepository.findOneBy({ id, user });
 
       if (!found) {
-        this.logger.error(
-          `Failed to get category: ${id} for user "${user.username}"`,
-        );
-        throw new NotFoundException(
-          `Category: ${id} not found for the user: ${user.username}`,
-        );
+        this.logger.error(CATEGORY_NOT_FOUND_ERROR_MESSAGE);
+        throw new NotFoundException(CATEGORY_NOT_FOUND_ERROR_MESSAGE);
       }
 
       const deleted = await this.categoriesRepository.delete({ id: found.id });
 
       if (!deleted) {
-        this.logger.error(
-          `Failed to delete category: ${id} for user "${user.username}"`,
-        );
-        throw new BadRequestException(`Could not delete category "${id}"`);
+        this.logger.error(FAILED_DELETE_ERROR_MESSAGE);
+        throw new BadRequestException(FAILED_DELETE_ERROR_MESSAGE);
       }
     } catch (error) {
       this.logger.error(error.response.message);
